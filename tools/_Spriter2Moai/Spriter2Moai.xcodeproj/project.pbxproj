@@ -1,0 +1,336 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		227BE4C61770017D00B59FB4 /* libboost_filesystem-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 227BE4C41770017D00B59FB4 /* libboost_filesystem-mt.dylib */; };
+		227BE4C71770017D00B59FB4 /* libboost_system-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 227BE4C51770017D00B59FB4 /* libboost_system-mt.dylib */; };
+		229EB48D177575440000FE38 /* transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 229EB48B177575430000FE38 /* transform.cpp */; };
+		22F82AAE176EB30000E92DEE /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82AAD176EB30000E92DEE /* main.cpp */; };
+		22F82AB0176EB30000E92DEE /* Spriter2Moai.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 22F82AAF176EB30000E92DEE /* Spriter2Moai.1 */; };
+		22F82AB9176EB3F200E92DEE /* tinyxml2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82AB6176EB3F200E92DEE /* tinyxml2.cpp */; };
+		22F82ABF176F13C700E92DEE /* entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82ABE176F13C700E92DEE /* entity.cpp */; };
+		22F82AC2176F143700E92DEE /* animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82AC0176F143700E92DEE /* animation.cpp */; };
+		22F82AC5176F25C300E92DEE /* spriterData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82AC3176F25C300E92DEE /* spriterData.cpp */; };
+		22F82AC7176F2CD700E92DEE /* folder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82AC6176F2CD700E92DEE /* folder.cpp */; };
+		22F82AC9176F2FAC00E92DEE /* file.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82AC8176F2FAC00E92DEE /* file.cpp */; };
+		22F82ACC176FA7EC00E92DEE /* mainlineKey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82ACA176FA7EC00E92DEE /* mainlineKey.cpp */; };
+		22F82ACF176FA7F700E92DEE /* timeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82ACD176FA7F700E92DEE /* timeline.cpp */; };
+		22F82AD3176FB46F00E92DEE /* objectRef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82AD1176FB46F00E92DEE /* objectRef.cpp */; };
+		22F82AD6176FB47B00E92DEE /* object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82AD4176FB47B00E92DEE /* object.cpp */; };
+		22F82AD9176FB48500E92DEE /* boneRef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82AD7176FB48500E92DEE /* boneRef.cpp */; };
+		22F82ADC176FB48E00E92DEE /* bone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82ADA176FB48E00E92DEE /* bone.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		22F82AA8176EB30000E92DEE /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				22F82AB0176EB30000E92DEE /* Spriter2Moai.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		227BE4C41770017D00B59FB4 /* libboost_filesystem-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_filesystem-mt.dylib"; path = "../../../../../../opt/local/lib/libboost_filesystem-mt.dylib"; sourceTree = "<group>"; };
+		227BE4C51770017D00B59FB4 /* libboost_system-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_system-mt.dylib"; path = "../../../../../../opt/local/lib/libboost_system-mt.dylib"; sourceTree = "<group>"; };
+		229EB48B177575430000FE38 /* transform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = transform.cpp; sourceTree = "<group>"; };
+		229EB48C177575440000FE38 /* transform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = transform.h; sourceTree = "<group>"; };
+		22F82AAA176EB30000E92DEE /* Spriter2Moai */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Spriter2Moai; sourceTree = BUILT_PRODUCTS_DIR; };
+		22F82AAD176EB30000E92DEE /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		22F82AAF176EB30000E92DEE /* Spriter2Moai.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Spriter2Moai.1; sourceTree = "<group>"; };
+		22F82AB6176EB3F200E92DEE /* tinyxml2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml2.cpp; sourceTree = "<group>"; };
+		22F82AB7176EB3F200E92DEE /* tinyxml2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml2.h; sourceTree = "<group>"; };
+		22F82ABB176F0D1000E92DEE /* folder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = folder.h; sourceTree = "<group>"; };
+		22F82ABC176F0D1C00E92DEE /* file.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = file.h; sourceTree = "<group>"; };
+		22F82ABD176F12D200E92DEE /* entity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = entity.h; sourceTree = "<group>"; };
+		22F82ABE176F13C700E92DEE /* entity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = entity.cpp; sourceTree = "<group>"; };
+		22F82AC0176F143700E92DEE /* animation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = animation.cpp; sourceTree = "<group>"; };
+		22F82AC1176F143700E92DEE /* animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = animation.h; sourceTree = "<group>"; };
+		22F82AC3176F25C300E92DEE /* spriterData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spriterData.cpp; sourceTree = "<group>"; };
+		22F82AC4176F25C300E92DEE /* spriterData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spriterData.h; sourceTree = "<group>"; };
+		22F82AC6176F2CD700E92DEE /* folder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = folder.cpp; sourceTree = "<group>"; };
+		22F82AC8176F2FAC00E92DEE /* file.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = file.cpp; sourceTree = "<group>"; };
+		22F82ACA176FA7EC00E92DEE /* mainlineKey.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mainlineKey.cpp; sourceTree = "<group>"; };
+		22F82ACB176FA7EC00E92DEE /* mainlineKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mainlineKey.h; sourceTree = "<group>"; };
+		22F82ACD176FA7F700E92DEE /* timeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timeline.cpp; sourceTree = "<group>"; };
+		22F82ACE176FA7F700E92DEE /* timeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timeline.h; sourceTree = "<group>"; };
+		22F82AD1176FB46F00E92DEE /* objectRef.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = objectRef.cpp; sourceTree = "<group>"; };
+		22F82AD2176FB46F00E92DEE /* objectRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = objectRef.h; sourceTree = "<group>"; };
+		22F82AD4176FB47B00E92DEE /* object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = object.cpp; sourceTree = "<group>"; };
+		22F82AD5176FB47B00E92DEE /* object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = object.h; sourceTree = "<group>"; };
+		22F82AD7176FB48500E92DEE /* boneRef.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = boneRef.cpp; sourceTree = "<group>"; };
+		22F82AD8176FB48500E92DEE /* boneRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = boneRef.h; sourceTree = "<group>"; };
+		22F82ADA176FB48E00E92DEE /* bone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bone.cpp; sourceTree = "<group>"; };
+		22F82ADB176FB48E00E92DEE /* bone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bone.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		22F82AA7176EB30000E92DEE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				227BE4C61770017D00B59FB4 /* libboost_filesystem-mt.dylib in Frameworks */,
+				227BE4C71770017D00B59FB4 /* libboost_system-mt.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		22F82AA1176EB30000E92DEE = {
+			isa = PBXGroup;
+			children = (
+				227BE4C41770017D00B59FB4 /* libboost_filesystem-mt.dylib */,
+				227BE4C51770017D00B59FB4 /* libboost_system-mt.dylib */,
+				22F82AAC176EB30000E92DEE /* Spriter2Moai */,
+				22F82AAB176EB30000E92DEE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		22F82AAB176EB30000E92DEE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				22F82AAA176EB30000E92DEE /* Spriter2Moai */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		22F82AAC176EB30000E92DEE /* Spriter2Moai */ = {
+			isa = PBXGroup;
+			children = (
+				22F82AD0176FB43700E92DEE /* Spriter */,
+				22F82AB6176EB3F200E92DEE /* tinyxml2.cpp */,
+				22F82AB7176EB3F200E92DEE /* tinyxml2.h */,
+				22F82AAD176EB30000E92DEE /* main.cpp */,
+				22F82AAF176EB30000E92DEE /* Spriter2Moai.1 */,
+			);
+			path = Spriter2Moai;
+			sourceTree = "<group>";
+		};
+		22F82AD0176FB43700E92DEE /* Spriter */ = {
+			isa = PBXGroup;
+			children = (
+				22F82AC6176F2CD700E92DEE /* folder.cpp */,
+				22F82ABB176F0D1000E92DEE /* folder.h */,
+				22F82AC8176F2FAC00E92DEE /* file.cpp */,
+				22F82ABC176F0D1C00E92DEE /* file.h */,
+				22F82ABE176F13C700E92DEE /* entity.cpp */,
+				22F82ABD176F12D200E92DEE /* entity.h */,
+				22F82AC0176F143700E92DEE /* animation.cpp */,
+				22F82AC1176F143700E92DEE /* animation.h */,
+				22F82AC3176F25C300E92DEE /* spriterData.cpp */,
+				22F82AC4176F25C300E92DEE /* spriterData.h */,
+				22F82ACA176FA7EC00E92DEE /* mainlineKey.cpp */,
+				22F82ACB176FA7EC00E92DEE /* mainlineKey.h */,
+				22F82ACD176FA7F700E92DEE /* timeline.cpp */,
+				22F82ACE176FA7F700E92DEE /* timeline.h */,
+				22F82AD1176FB46F00E92DEE /* objectRef.cpp */,
+				22F82AD2176FB46F00E92DEE /* objectRef.h */,
+				22F82AD4176FB47B00E92DEE /* object.cpp */,
+				22F82AD5176FB47B00E92DEE /* object.h */,
+				22F82AD7176FB48500E92DEE /* boneRef.cpp */,
+				22F82AD8176FB48500E92DEE /* boneRef.h */,
+				22F82ADA176FB48E00E92DEE /* bone.cpp */,
+				22F82ADB176FB48E00E92DEE /* bone.h */,
+				229EB48B177575430000FE38 /* transform.cpp */,
+				229EB48C177575440000FE38 /* transform.h */,
+			);
+			name = Spriter;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		22F82AA9176EB30000E92DEE /* Spriter2Moai */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 22F82AB3176EB30000E92DEE /* Build configuration list for PBXNativeTarget "Spriter2Moai" */;
+			buildPhases = (
+				22F82AA6176EB30000E92DEE /* Sources */,
+				22F82AA7176EB30000E92DEE /* Frameworks */,
+				22F82AA8176EB30000E92DEE /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Spriter2Moai;
+			productName = Spriter2Moai;
+			productReference = 22F82AAA176EB30000E92DEE /* Spriter2Moai */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		22F82AA2176EB30000E92DEE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Samuel Cartwright";
+			};
+			buildConfigurationList = 22F82AA5176EB30000E92DEE /* Build configuration list for PBXProject "Spriter2Moai" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 22F82AA1176EB30000E92DEE;
+			productRefGroup = 22F82AAB176EB30000E92DEE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				22F82AA9176EB30000E92DEE /* Spriter2Moai */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		22F82AA6176EB30000E92DEE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22F82AAE176EB30000E92DEE /* main.cpp in Sources */,
+				22F82AB9176EB3F200E92DEE /* tinyxml2.cpp in Sources */,
+				22F82ABF176F13C700E92DEE /* entity.cpp in Sources */,
+				22F82AC2176F143700E92DEE /* animation.cpp in Sources */,
+				22F82AC5176F25C300E92DEE /* spriterData.cpp in Sources */,
+				22F82AC7176F2CD700E92DEE /* folder.cpp in Sources */,
+				22F82AC9176F2FAC00E92DEE /* file.cpp in Sources */,
+				22F82ACC176FA7EC00E92DEE /* mainlineKey.cpp in Sources */,
+				22F82ACF176FA7F700E92DEE /* timeline.cpp in Sources */,
+				22F82AD3176FB46F00E92DEE /* objectRef.cpp in Sources */,
+				22F82AD6176FB47B00E92DEE /* object.cpp in Sources */,
+				22F82AD9176FB48500E92DEE /* boneRef.cpp in Sources */,
+				22F82ADC176FB48E00E92DEE /* bone.cpp in Sources */,
+				229EB48D177575440000FE38 /* transform.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		22F82AB1176EB30000E92DEE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.7;
+			};
+			name = Debug;
+		};
+		22F82AB2176EB30000E92DEE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx10.7;
+			};
+			name = Release;
+		};
+		22F82AB4176EB30000E92DEE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				HEADER_SEARCH_PATHS = /opt/local/include/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.7;
+			};
+			name = Debug;
+		};
+		22F82AB5176EB30000E92DEE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				HEADER_SEARCH_PATHS = /opt/local/include/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.7;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		22F82AA5176EB30000E92DEE /* Build configuration list for PBXProject "Spriter2Moai" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				22F82AB1176EB30000E92DEE /* Debug */,
+				22F82AB2176EB30000E92DEE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		22F82AB3176EB30000E92DEE /* Build configuration list for PBXNativeTarget "Spriter2Moai" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				22F82AB4176EB30000E92DEE /* Debug */,
+				22F82AB5176EB30000E92DEE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 22F82AA2176EB30000E92DEE /* Project object */;
+}
