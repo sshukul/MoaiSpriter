@@ -167,7 +167,7 @@ std::ostream& operator<< (std::ostream& out, const Animation& animation) {
             out << endl;
         }
     }
-    out << "\t}" << endl;
+    out << "\t}";
     return out;
 }
 
