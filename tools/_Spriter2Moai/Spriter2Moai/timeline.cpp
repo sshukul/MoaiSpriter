@@ -60,7 +60,7 @@ void Timeline::loadXML(const tinyxml2::XMLElement* a_element) {
     }
 }
 
-Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int length) const {
+Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int length, bool looping) const {
     Bone* bone = m_owner->getBoneByTime(boneRef->getTimeline(), time);
     Transform boneTransform(bone->getX(), bone->getY(), bone->getAngle(), bone->getScaleX(), bone->getScaleY());
     
@@ -68,19 +68,21 @@ Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int leng
         Bone* boneNextKey = m_owner->getNextBoneByTime(boneRef->getTimeline(), time);
         if(boneNextKey != NULL && boneNextKey->getTime() != bone->getTime()) {
             float nextFrameTime = boneNextKey->getTime();
-            if(nextFrameTime == 0) {
-                nextFrameTime = length;
+            if(!(looping == false && nextFrameTime == 0)) {
+                if(nextFrameTime == 0) {
+                    nextFrameTime = length;
+                }
+                float averagingFactor = ((float)time - (float)bone->getTime()) / (nextFrameTime - (float)bone->getTime());
+                Transform nextKeyTransform(boneNextKey->getX(), boneNextKey->getY(), boneNextKey->getAngle(), boneNextKey->getScaleX(), boneNextKey->getScaleY());
+                boneTransform.lerp(nextKeyTransform, averagingFactor, bone->getSpin());
             }
-            float averagingFactor = ((float)time - (float)bone->getTime()) / (nextFrameTime - (float)bone->getTime());
-            Transform nextKeyTransform(boneNextKey->getX(), boneNextKey->getY(), boneNextKey->getAngle(), boneNextKey->getScaleX(), boneNextKey->getScaleY());
-            boneTransform.lerp(nextKeyTransform, averagingFactor, bone->getSpin());
         }
     }
     
     if(boneRef->getParent() != -1) {
         //BoneRef* parent = m_owner->getBoneReference(boneRef->getParent(), key);
         BoneRef* parent = m_owner->getTimedBoneReference(boneRef->getParent(), time);
-        Transform parentTransform = buildTransform(parent, key, time, length);
+        Transform parentTransform = buildTransform(parent, key, time, length, looping);
         boneTransform.apply_parent_transform(parentTransform);
     }
     
@@ -121,7 +123,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                 BoneRef* boneRef = timeline.m_owner->getTimedBoneReference(objectRef, mKey->getTime()); //getBoneReference(objectRef, mainlineKeyId);
                 if (boneRef != NULL) {
                     //const Timeline* boneTimeline = timeline.m_owner->getTimeline(boneRef->getTimeline());
-                    Transform parentTransform = timeline.buildTransform(boneRef, mainlineKeyId, mKey->getTime(), timeline.m_owner->getLength());
+                    Transform parentTransform = timeline.buildTransform(boneRef, mainlineKeyId, mKey->getTime(), timeline.m_owner->getLength(), timeline.m_owner->getLooping());
                     objectTransform.apply_parent_transform(parentTransform);
                 }
                 
@@ -149,7 +151,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                     firstZIndex = objectRef->getZIndex();
                 }
                 
-                if(prevObj == NULL || !resultObj->equals(*prevObj)) {
+                if(prevObj == NULL || (*it)->getTime() == mKey->getTime() || !resultObj->equals(*prevObj)) {
                     Timeline::writeObject(mKey->getTime(), resultObj, timeline,  out, &keyNum, z);
                 }
                 
@@ -166,7 +168,8 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         // This bit adds a "loopback" keyframe which is the same as the first frame,
         // if the last frame isn't specified as a keyframe. This makes it tween and loop smoothly like
         // in the Spriter GUI rather than "jerk" back to the first frame after the final frame.
-        if(!loopbackFrameAlreadyWritten && (itMain + 1 == timeline.m_owner->m_mainlineKeys.end())) {
+        if(!loopbackFrameAlreadyWritten && (itMain + 1 == timeline.m_owner->m_mainlineKeys.end()) &&
+           timeline.m_owner->getLooping() != false) {
             // TODO Use firstResultObj to output loopback frame here
             if(prevObj == NULL || !firstResultObj->equals(*prevObj)) {
               Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex);

@@ -30,13 +30,13 @@ private:
     int m_id;
     string m_name;
     unsigned int m_length;
-    bool m_looping;
+    bool m_looping = true;
     vector<Timeline*> m_timelines;
     
 public:
     vector<MainlineKey*> m_mainlineKeys;
-    Animation(): m_owner(NULL), m_id(-1), m_name(""), m_length(0), m_looping(false) {}
-    Animation(Entity* a_owner): m_owner(a_owner), m_id(-1), m_name(""), m_length(0), m_looping(false) {}
+    Animation(): m_owner(NULL), m_id(-1), m_name(""), m_length(0), m_looping(true) {}
+    Animation(Entity* a_owner): m_owner(a_owner), m_id(-1), m_name(""), m_length(0), m_looping(true) {}
     ~Animation();
         
     inline Entity* getOwner() const {return m_owner;}

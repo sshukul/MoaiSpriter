@@ -54,7 +54,7 @@ public:
     
     friend std::ostream& operator<< (std::ostream& out, const Timeline& timeline);
     
-    Transform buildTransform(BoneRef* objectRef, int key, int time, int length) const;
+    Transform buildTransform(BoneRef* objectRef, int key, int time, int length, bool looping) const;
     
     void addObject(Object* a_object);
     void addBone(Bone* a_bone);
