@@ -55,6 +55,9 @@ public:
     BoneRef* getBoneReference(unsigned int a_id);
     
     ObjectRef* findReferenceToObject(unsigned int a_timelineIndex, unsigned int a_keyIndex);
+    ObjectRef* findReferenceToObject(unsigned int a_timelineIndex);
+    
+    MainlineKey* clone();
 };
 
 #endif /* defined(__Spriter2Moai__Key__) */

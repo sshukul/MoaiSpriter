@@ -26,6 +26,7 @@ private:
     
 public:
     Object(): m_id(-1), m_folder(-1), m_file(-1), m_x(0), m_y(0), m_angle(0), m_scaleX(1), m_scaleY(1), m_time(0), m_spin(1) {}
+    Object(const Object& rhs);
     ~Object() {}
     
     inline int getId() const {return m_id;}
@@ -48,6 +49,9 @@ public:
     inline void setTime(unsigned int a_time) {m_time = a_time;}
     inline int getSpin() const {return m_spin;}
     inline void setSpin(int a_spin) {m_spin = a_spin;}
+    
+    bool equals(const Object& o);
+    Object* clone();
     
     void loadXML(const tinyxml2::XMLElement* a_element);
 };

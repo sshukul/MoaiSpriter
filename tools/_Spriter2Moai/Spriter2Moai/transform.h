@@ -16,6 +16,7 @@ public:
     float x, y;
     float angle;
     float scale_x, scale_y;
+    int spin;
     
     Transform();
     Transform(float x, float y, float angle, float scale_x, float scale_y);

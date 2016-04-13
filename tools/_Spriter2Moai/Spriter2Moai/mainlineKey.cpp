@@ -76,6 +76,14 @@ ObjectRef* MainlineKey::findReferenceToObject(unsigned int a_timelineIndex, unsi
     return NULL;
 }
 
+ObjectRef* MainlineKey::findReferenceToObject(unsigned int a_timelineIndex) {
+    for(vector<ObjectRef*>::iterator it = m_objectRefs.begin(); it != m_objectRefs.end(); ++it) {
+        if((*it)->getTimeline() == a_timelineIndex)
+            return *it;
+    }
+    return NULL;
+}
+
 // find the bone reference that this object reference is referring to
 BoneRef* MainlineKey::getBoneReference(ObjectRef* a_objectRef) {
     int idx = 0;
@@ -93,6 +101,14 @@ BoneRef* MainlineKey::getBoneReference(unsigned int a_id) {
     return m_boneRefs[a_id];
 }
 
+MainlineKey* MainlineKey::clone() {
+    MainlineKey* mainlineKey = new MainlineKey();
+    mainlineKey->setOwner(this->getOwner());
+    mainlineKey->setId(this->getId());
+    mainlineKey->setSpin(this->getSpin());
+    mainlineKey->setTime(this->getTime());
+    return mainlineKey;
+}
 
 
 

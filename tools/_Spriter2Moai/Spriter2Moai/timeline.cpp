@@ -10,6 +10,7 @@
 #include <boost/format.hpp>
 #include <math.h>
 #include "timeline.h"
+#include "mainlineKey.h"
 #include "object.h"
 #include "bone.h"
 #include "animation.h"
@@ -59,13 +60,27 @@ void Timeline::loadXML(const tinyxml2::XMLElement* a_element) {
     }
 }
 
-Transform Timeline::buildTransform(BoneRef* boneRef, int key) const {
-    Bone* bone = m_owner->getBone(boneRef->getTimeline(), boneRef->getKey());
+Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int length) const {
+    Bone* bone = m_owner->getBoneByTime(boneRef->getTimeline(), time);
     Transform boneTransform(bone->getX(), bone->getY(), bone->getAngle(), bone->getScaleX(), bone->getScaleY());
     
+    if(time != bone->getTime()) {
+        Bone* boneNextKey = m_owner->getNextBoneByTime(boneRef->getTimeline(), time);
+        if(boneNextKey != NULL && boneNextKey->getTime() != bone->getTime()) {
+            float nextFrameTime = boneNextKey->getTime();
+            if(nextFrameTime == 0) {
+                nextFrameTime = length;
+            }
+            float averagingFactor = ((float)time - (float)bone->getTime()) / (nextFrameTime - (float)bone->getTime());
+            Transform nextKeyTransform(boneNextKey->getX(), boneNextKey->getY(), boneNextKey->getAngle(), boneNextKey->getScaleX(), boneNextKey->getScaleY());
+            boneTransform.lerp(nextKeyTransform, averagingFactor, bone->getSpin());
+        }
+    }
+    
     if(boneRef->getParent() != -1) {
-        BoneRef* parent = m_owner->getBoneReference(boneRef->getParent(), key);
-        Transform parentTransform = buildTransform(parent, key);
+        //BoneRef* parent = m_owner->getBoneReference(boneRef->getParent(), key);
+        BoneRef* parent = m_owner->getTimedBoneReference(boneRef->getParent(), time);
+        Transform parentTransform = buildTransform(parent, key, time, length);
         boneTransform.apply_parent_transform(parentTransform);
     }
     
@@ -82,51 +97,107 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         return out;
     
     out << "\t\t[" << timeline.m_id + 1 << "] = {" << endl;
-    for(vector<Object*>::const_iterator it = timeline.m_objects.begin(); it != timeline.m_objects.end(); ) {
-        // For each object we have to check if it is attached to a bone. If it is, then
-        // we need to recursively look up the bone's properties and calculate the values to add to the
-        // object position.
-        
-        Object* object = *it;
-        
-        // search the mainline for any references to this timeline and key pair
-        int mainlineKeyId;
-        ObjectRef* objectRef = timeline.m_owner->findReferenceToObject(timeline.m_id, object->getId(), &mainlineKeyId);
+    int keyNum = 0;
+    for(vector<MainlineKey*>::const_iterator itMain = timeline.m_owner->m_mainlineKeys.begin(); itMain != timeline.m_owner->m_mainlineKeys.end(); itMain++) {
+        MainlineKey* mKey = *itMain;
+        ObjectRef* objectRef = mKey->findReferenceToObject(timeline.m_id);
+        Object* firstResultObj;
+        int firstZIndex = 0;
+        Object* prevObj;
+        bool loopbackFrameAlreadyWritten;
+        for(vector<Object*>::const_iterator it = timeline.m_objects.begin(); it != timeline.m_objects.end(); ) {
+            // For each object we have to check if it is attached to a bone. If it is, then
+            // we need to recursively look up the bone's properties and calculate the values to add to the
+            // object position.
+            
+            Object* object = *it;
+            if(objectRef->getKey() == object->getId()) {
+                // search the mainline for any references to this timeline and key pair
+                int mainlineKeyId = mKey->getId();
+                //ObjectRef* objectRef = timeline.m_owner->findReferenceToObject(timeline.m_id, object->getId(), &mainlineKeyId);
+                int z = 0;
                 
-        
-        Transform objectTransform(object->getX(), object->getY(), object->getAngle(), object->getScaleX(), object->getScaleY());
-        BoneRef* boneRef = timeline.m_owner->getBoneReference(objectRef, mainlineKeyId);
-        Transform parentTransform = timeline.buildTransform(boneRef, mainlineKeyId);
-        objectTransform.apply_parent_transform(parentTransform);
-        
-        float x = objectTransform.x;
-        float y = objectTransform.y;
-        int z = objectRef->getZIndex();
-        float angle = objectTransform.angle;
-        float scaleX = objectTransform.scale_x;
-        float scaleY = objectTransform.scale_y;
+                Transform objectTransform(object->getX(), object->getY(), object->getAngle(), object->getScaleX(), object->getScaleY());
+                BoneRef* boneRef = timeline.m_owner->getTimedBoneReference(objectRef, mKey->getTime()); //getBoneReference(objectRef, mainlineKeyId);
+                if (boneRef != NULL) {
+                    //const Timeline* boneTimeline = timeline.m_owner->getTimeline(boneRef->getTimeline());
+                    Transform parentTransform = timeline.buildTransform(boneRef, mainlineKeyId, mKey->getTime(), timeline.m_owner->getLength());
+                    objectTransform.apply_parent_transform(parentTransform);
+                }
                 
-        out << "\t\t\t[" << object->getId() + 1 << "] = {" << endl;
-                    
-        out << "\t\t\t\t['angle'] = " << boost::format("%.4f") % angle << "," << endl;
-        out << "\t\t\t\t['texture'] = '" << timeline.m_owner->getFileName(object->getFolder(), object->getFile()) << "'," << endl;
-        out << "\t\t\t\t['zindex'] = " << z << "," << endl;
-        out << "\t\t\t\t['scale_x'] = " << boost::format("%.4f") % scaleX << "," << endl;
-        out << "\t\t\t\t['scale_y'] = " << boost::format("%.4f") % scaleY << "," << endl;
-        out << "\t\t\t\t['time'] = " << object->getTime() << "," << endl;
-        out << "\t\t\t\t['x'] = " << boost::format("%.6f") % x << "," << endl;
-        out << "\t\t\t\t['y'] = " << boost::format("%.6f") % y << "," << endl;
-        out << "\t\t\t\t['spin'] = " << object->getSpin() << "," << endl;
-        out << "\t\t\t\t['pivot_x'] = " << 0 << "," << endl;
-        out << "\t\t\t\t['pivot_y'] = " << timeline.m_owner->getFile(object->getFolder(), object->getFile())->getHeight()<< endl;
-        
-        out << "\t\t\t}";
-        if(++it != timeline.m_objects.end())
-            out << ", ";
-        out << endl;
+                float x = objectTransform.x;
+                float y = objectTransform.y;
+                if (objectRef != NULL) {
+                    z = objectRef->getZIndex();
+                }
+                float angle = fmod(objectTransform.angle, 360);
+                float scaleX = objectTransform.scale_x;
+                float scaleY = objectTransform.scale_y;
+                
+                Object* resultObj = new Object();
+                resultObj->setAngle(angle);
+                resultObj->setFile(object->getFile());
+                resultObj->setFolder(object->getFolder());
+                resultObj->setScaleX(scaleX);
+                resultObj->setScaleY(scaleY);
+                resultObj->setX(x);
+                resultObj->setY(y);
+                resultObj->setSpin(object->getSpin());
+                
+                if(itMain == timeline.m_owner->m_mainlineKeys.begin()) {
+                    firstResultObj = resultObj;
+                    firstZIndex = objectRef->getZIndex();
+                }
+                
+                if(prevObj == NULL || !resultObj->equals(*prevObj)) {
+                    Timeline::writeObject(mKey->getTime(), resultObj, timeline,  out, &keyNum, z);
+                }
+                
+                if(mKey->getTime() == timeline.m_owner->getLength()) {
+                    loopbackFrameAlreadyWritten = true;
+                }
+
+                ++it;
+                prevObj = resultObj;
+            } else {
+                ++it;
+            }
+        }
+        // This bit adds a "loopback" keyframe which is the same as the first frame,
+        // if the last frame isn't specified as a keyframe. This makes it tween and loop smoothly like
+        // in the Spriter GUI rather than "jerk" back to the first frame after the final frame.
+        if(!loopbackFrameAlreadyWritten && (itMain + 1 == timeline.m_owner->m_mainlineKeys.end())) {
+            // TODO Use firstResultObj to output loopback frame here
+            if(prevObj == NULL || !firstResultObj->equals(*prevObj)) {
+              Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex);
+            }
+        }
     }
     out << "\t\t}";
     return out;
+}
+
+void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z) {
+    out << "\t\t\t[" << ++(*keyNum) << "] = {" << endl;
+    
+    out << "\t\t\t\t['angle'] = " << boost::format("%.4f") % resultObj->getAngle() << "," << endl;
+    out << "\t\t\t\t['texture'] = '" << timeline.m_owner->getFileName(resultObj->getFolder(), resultObj->getFile()) << "'," << endl;
+    out << "\t\t\t\t['zindex'] = " << z << "," << endl;
+    out << "\t\t\t\t['scale_x'] = " << boost::format("%.4f") % resultObj->getScaleX() << "," << endl;
+    out << "\t\t\t\t['scale_y'] = " << boost::format("%.4f") % resultObj->getScaleX() << "," << endl;
+    out << "\t\t\t\t['time'] = " << time << "," << endl;
+    out << "\t\t\t\t['x'] = " << boost::format("%.6f") % resultObj->getX() << "," << endl;
+    out << "\t\t\t\t['y'] = " << boost::format("%.6f") % resultObj->getY() << "," << endl;
+    out << "\t\t\t\t['spin'] = " << resultObj->getSpin() << "," << endl;
+    out << "\t\t\t\t['pivot_x'] = " << 0 << "," << endl;
+    out << "\t\t\t\t['pivot_y'] = " << timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getHeight()<< endl;
+    
+    out << "\t\t\t}";
+    
+    if(time != timeline.m_owner->getLength()) {
+        out << ", ";
+    }
+    out << endl;
 }
 
 void Timeline::addObject(Object* a_object) {
@@ -155,6 +226,44 @@ Bone* Timeline::getBone(int a_index) {
     if(isTypeObject())
         return NULL;
     return m_bones[a_index];
+}
+
+Bone* Timeline::getBoneByTime(int time) {
+    if(isTypeObject())
+        return NULL;
+    for(vector<Bone*>::const_iterator it = m_bones.begin(); it != m_bones.end(); it++) {
+        if((*it)->getTime() == time) {
+            return (*it);
+        } else if((*it)->getTime() > time) {
+            it--;
+            return (*it);
+        } else if(it+1 == m_bones.end()) {
+            return (*it);
+        }
+    }
+    return NULL;
+}
+
+Bone* Timeline::getNextBoneByTime(int time) {
+    if(isTypeObject())
+        return NULL;
+    for(vector<Bone*>::const_iterator it = m_bones.begin(); it != m_bones.end(); it++) {
+        if((*it)->getTime() == time) {
+            it++;
+            if(it != m_bones.end()) {
+                return (*it);
+            } else {
+                it = m_bones.begin();
+                return (*it);
+            }
+        } else if((*it)->getTime() > time) {
+            return (*it);
+        } else if(it+1 == m_bones.end()) {
+            it = m_bones.begin();
+            return (*it);
+        }
+    }
+    return NULL;
 }
 
 

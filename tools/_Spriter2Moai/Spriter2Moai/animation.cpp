@@ -45,8 +45,37 @@ Bone* Animation::getBone(unsigned int a_timelineIndex, unsigned int a_keyIndex) 
     if(a_timelineIndex >= m_timelines.size())
         return NULL;
     
+    if(m_timelines[a_timelineIndex] == NULL)
+        return NULL;
+    
     if(m_timelines[a_timelineIndex]->getObjectType().compare("bone") == 0) {
         return m_timelines[a_timelineIndex]->getBone(a_keyIndex);
+    }
+    return NULL;
+}
+
+Bone* Animation::getBoneByTime(unsigned int a_timelineIndex, int time) {
+    if(a_timelineIndex >= m_timelines.size())
+        return NULL;
+    
+    if(m_timelines[a_timelineIndex] == NULL)
+        return NULL;
+    
+    if(m_timelines[a_timelineIndex]->getObjectType().compare("bone") == 0) {
+        return m_timelines[a_timelineIndex]->getBoneByTime(time);
+    }
+    return NULL;
+}
+
+Bone* Animation::getNextBoneByTime(unsigned int a_timelineIndex, int time) {
+    if(a_timelineIndex >= m_timelines.size())
+        return NULL;
+    
+    if(m_timelines[a_timelineIndex] == NULL)
+        return NULL;
+    
+    if(m_timelines[a_timelineIndex]->getObjectType().compare("bone") == 0) {
+        return m_timelines[a_timelineIndex]->getNextBoneByTime(time);
     }
     return NULL;
 }
@@ -97,10 +126,28 @@ BoneRef* Animation::getBoneReference(ObjectRef* a_objectRef, int a_keyId) {
     return m_mainlineKeys[a_keyId]->getBoneReference(a_objectRef);
 }
 
+BoneRef* Animation::getTimedBoneReference(ObjectRef* a_objectRef, int time) {
+    for(vector<MainlineKey*>::iterator it = m_mainlineKeys.begin(); it != m_mainlineKeys.end(); ++it) {
+        if((*it)->getTime() == time) {
+            return (*it)->getBoneReference(a_objectRef);
+        }
+    }
+    return NULL;
+}
+
 BoneRef* Animation::getBoneReference(unsigned int a_boneRefId, unsigned int a_keyId) {
     if(a_keyId >= m_mainlineKeys.size())
         return NULL;
     return m_mainlineKeys[a_keyId]->getBoneReference(a_boneRefId);
+}
+
+BoneRef* Animation::getTimedBoneReference(unsigned int a_boneRefId, int time) {
+    for(vector<MainlineKey*>::iterator it = m_mainlineKeys.begin(); it != m_mainlineKeys.end(); ++it) {
+        if((*it)->getTime() == time) {
+            return (*it)->getBoneReference(a_boneRefId);
+        }
+    }
+    return NULL;
 }
 
 void Animation::loadXML(const tinyxml2::XMLElement* a_element) {

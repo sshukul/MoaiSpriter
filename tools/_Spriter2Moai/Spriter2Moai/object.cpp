@@ -64,3 +64,40 @@ void Object::loadXML(const tinyxml2::XMLElement* a_element) {
         }
     }
 }
+
+bool Object::equals(const Object& o) {
+    if (o.getX() != this->getX()) {
+        return false;
+    } else if (o.getY() != this->getY()) {
+        return false;
+    } else if (o.getAngle() != this->getAngle()) {
+        return false;
+    } else if (o.getScaleX() != this->getScaleX()) {
+        return false;
+    } else if (o.getScaleY() != this->getScaleY()) {
+        return false;
+    } else if (o.getFile() != this->getFile()) {
+        return false;
+    } else if (o.getFolder() != this->getFolder()) {
+        return false;
+    } else if (o.getSpin() != this->getSpin()) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+Object* Object::clone() {
+    Object* object = new Object();
+    object->setX(this->getX());
+    object->setY(this->getY());
+    object->setTime(this->getTime());
+    object->setScaleX(this->getScaleX());
+    object->setScaleY(this->getScaleY());
+    object->setId(this->getId());
+    object->setFile(this->getFile());
+    object->setFolder(this->getFolder());
+    object->setSpin(this->getSpin());
+    object->setAngle(this->getAngle());
+    return object;
+}

@@ -18,6 +18,8 @@ using namespace std;
 
 class Animation;
 class Object;
+class ObjectRef;
+class MainlineKey;
 class Bone;
 class BoneRef;
 
@@ -29,6 +31,8 @@ private:
     string m_objectType;
     vector<Object*> m_objects;
     vector<Bone*> m_bones;
+    
+    static void writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z);
     
 public:
     Timeline(): m_owner(NULL), m_id(-1), m_name(""), m_objectType("object") {}
@@ -50,13 +54,15 @@ public:
     
     friend std::ostream& operator<< (std::ostream& out, const Timeline& timeline);
     
-    Transform buildTransform(BoneRef* objectRef, int key) const;
+    Transform buildTransform(BoneRef* objectRef, int key, int time, int length) const;
     
     void addObject(Object* a_object);
     void addBone(Bone* a_bone);
     
     Object* getObject(int a_index);
     Bone* getBone(int a_index);
+    Bone* getBoneByTime(int time);
+    Bone* getNextBoneByTime(int time);
 };
 
 std::ostream& operator<< (std::ostream& out, const Timeline& timeline);
