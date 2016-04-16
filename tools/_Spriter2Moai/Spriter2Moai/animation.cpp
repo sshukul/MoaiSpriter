@@ -90,6 +90,16 @@ Object* Animation::getObject(unsigned int a_timelineIndex, unsigned int a_keyInd
     return NULL;
 }
 
+Object* Animation::getNextObjectByTime(unsigned int a_timelineIndex, int time) {
+    if(a_timelineIndex >= m_timelines.size())
+        return NULL;
+    
+    if(m_timelines[a_timelineIndex] == NULL)
+        return NULL;
+    
+    return m_timelines[a_timelineIndex]->getNextObjectByTime(time);
+}
+
 string Animation::getFileName(unsigned int a_folderIndex, unsigned int a_fileIndex) {
     SpriterData* spriter = m_owner->getOwner();
     
@@ -194,6 +204,7 @@ void Animation::loadXML(const tinyxml2::XMLElement* a_element) {
 }
 
 std::ostream& operator<< (std::ostream& out, const Animation& animation) {
+    cout << "Converting animation " << animation.m_name;
     out << "\t['" << animation.m_name << "'] = {" << endl;
     
     // count how many object timelines we have
@@ -215,6 +226,7 @@ std::ostream& operator<< (std::ostream& out, const Animation& animation) {
         }
     }
     out << "\t}";
+    cout << " ... Done.\n";
     return out;
 }
 

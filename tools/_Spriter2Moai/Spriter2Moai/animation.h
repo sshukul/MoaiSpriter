@@ -62,6 +62,7 @@ public:
     Bone* getBoneByTime(unsigned int a_timelineIndex, int time);
     Bone* getNextBoneByTime(unsigned int a_timelineIndex, int time);
     Object* getObject(unsigned int a_timelineIndex, unsigned int a_keyIndex);
+    Object* getNextObjectByTime(unsigned int a_timelineIndex, int time);
     string getFileName(unsigned int a_folderIndex, unsigned int a_fileIndex);
     File* getFile(unsigned int a_folderIndex, unsigned int a_fileIndex);
     

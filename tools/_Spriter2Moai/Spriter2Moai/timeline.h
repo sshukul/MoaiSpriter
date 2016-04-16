@@ -34,6 +34,8 @@ private:
     
     static void writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z);
     
+    static float calculateActualRotationAngle(float startAngle, float endAngle, int spin);
+    
 public:
     Timeline(): m_owner(NULL), m_id(-1), m_name(""), m_objectType("object") {}
     Timeline(Animation* a_owner): m_owner(a_owner), m_id(-1), m_name(""), m_objectType("object") {}
@@ -60,6 +62,7 @@ public:
     void addBone(Bone* a_bone);
     
     Object* getObject(int a_index);
+    Object* getNextObjectByTime(int time);
     Bone* getBone(int a_index);
     Bone* getBoneByTime(int time);
     Bone* getNextBoneByTime(int time);

@@ -17,9 +17,10 @@ public:
     float angle;
     float scale_x, scale_y;
     int spin;
+    float rotationAngle = 0;
     
     Transform();
-    Transform(float x, float y, float angle, float scale_x, float scale_y);
+    Transform(float x, float y, float angle, float scale_x, float scale_y, int spin);
     
     bool operator==(const Transform& t) const;
     bool operator!=(const Transform& t) const;

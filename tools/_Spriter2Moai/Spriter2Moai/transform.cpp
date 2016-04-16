@@ -32,8 +32,8 @@ Transform::Transform()
 : x(0.0f), y(0.0f), angle(0.0f), scale_x(1.0f), scale_y(1.0f)
 {}
 
-Transform::Transform(float x, float y, float angle, float scale_x, float scale_y)
-: x(x), y(y), angle(angle), scale_x(scale_x), scale_y(scale_y)
+Transform::Transform(float x, float y, float angle, float scale_x, float scale_y, int spin)
+: x(x), y(y), angle(angle), scale_x(scale_x), scale_y(scale_y), spin(spin)
 {}
 
 bool Transform::operator==(const Transform& t) const
@@ -77,4 +77,13 @@ void Transform::apply_parent_transform(const Transform& parent)
     angle += parent.angle;
     scale_x *= parent.scale_x;
     scale_y *= parent.scale_y;
+    
+    rotationAngle += parent.rotationAngle;
+    if(rotationAngle < 0) {
+        spin = -1;
+    } else if(rotationAngle == 0) {
+        spin = 0;
+    } else {
+        spin = 1;
+    }
 }
