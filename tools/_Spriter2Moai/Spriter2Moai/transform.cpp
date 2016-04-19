@@ -61,6 +61,9 @@ void Transform::lerp(const Transform& transform, float t, int spin)
         else
             angle = lerp(angle, transform.angle, t);
     }
+    if(angle > 360) {
+        angle = angle - 360;
+    }
     
     scale_x = lerp(scale_x, transform.scale_x, t);
     scale_y = lerp(scale_y, transform.scale_y, t);

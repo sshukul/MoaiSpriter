@@ -65,13 +65,13 @@ float Timeline::calculateActualRotationAngle(float startAngle, float endAngle, i
         if(spin == -1) {
             return endAngle - startAngle;
         } else {
-            return 360 - endAngle;
+            return (360 - startAngle) + endAngle;
         }
     } else if(endAngle == startAngle) {
         return 0.0;
     } else {
         if(spin == -1) {
-            return endAngle - 360;
+            return endAngle - 360 - startAngle;
         } else {
             return endAngle - startAngle;
         }
@@ -81,6 +81,7 @@ float Timeline::calculateActualRotationAngle(float startAngle, float endAngle, i
 Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int length, bool looping) const {
     Bone* bone = m_owner->getBoneByTime(boneRef->getTimeline(), time);
     Transform boneTransform(bone->getX(), bone->getY(), bone->getAngle(), bone->getScaleX(), bone->getScaleY(), bone->getSpin());
+    Transform boneNextKeyTransform(bone->getX(), bone->getY(), bone->getAngle(), bone->getScaleX(), bone->getScaleY(), bone->getSpin());
     
     Bone* boneNextKey = m_owner->getNextBoneByTime(boneRef->getTimeline(), time);
     if(time != bone->getTime() && boneNextKey != NULL && boneNextKey->getTime() != bone->getTime()) {
@@ -95,8 +96,34 @@ Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int leng
         }
     }
     
+
+    
     if(boneNextKey != NULL && boneNextKey->getTime() != bone->getTime()) {
-       boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(bone->getAngle(), boneNextKey->getAngle(), bone->getSpin());
+        int nextMainlineKeyTime = 0;
+        for(vector<MainlineKey*>::const_iterator it = m_owner->m_mainlineKeys.begin(); it != m_owner->m_mainlineKeys.end(); it++) {
+            if((*it)->getTime() == time) {
+                if(it+1 != m_owner->m_mainlineKeys.end()) {
+                    it++;
+                    nextMainlineKeyTime = (*it)->getTime();
+                    break;
+                }
+            }
+        }
+        
+        // Find the bone angle at the next keyframe, based on lerping if needed. Use it
+        // to calculate the rotation angle and spin for the bone.
+        if(boneNextKey->getTime() != nextMainlineKeyTime) {
+            int nextKeyTime = boneNextKey->getTime();
+            if(boneNextKey->getTime() == 0) {
+                nextKeyTime = length;
+            }
+            float averagingFactor = ((float)nextMainlineKeyTime - (float) bone->getTime()) / ((float) nextKeyTime - (float) bone->getTime());
+            Transform nextKeyTransform(boneNextKey->getX(), boneNextKey->getY(), boneNextKey->getAngle(), boneNextKey->getScaleX(), boneNextKey->getScaleY(), boneNextKey->getSpin());
+            boneNextKeyTransform.lerp(nextKeyTransform, averagingFactor, bone->getSpin());
+            boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(boneTransform.angle, boneNextKeyTransform.angle, bone->getSpin());
+        } else {
+            boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(boneTransform.angle, boneNextKey->getAngle(), bone->getSpin());
+        }
     }
     
     if(boneRef->getParent() != -1) {
