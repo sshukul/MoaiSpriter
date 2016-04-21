@@ -114,13 +114,25 @@ Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int leng
         // to calculate the rotation angle and spin for the bone.
         if(boneNextKey->getTime() != nextMainlineKeyTime) {
             int nextKeyTime = boneNextKey->getTime();
+            bool skipLerp = false;
             if(boneNextKey->getTime() == 0) {
                 nextKeyTime = length;
+                if(looping == false) {
+                    skipLerp = true;
+                }
             }
-            float averagingFactor = ((float)nextMainlineKeyTime - (float) bone->getTime()) / ((float) nextKeyTime - (float) bone->getTime());
-            Transform nextKeyTransform(boneNextKey->getX(), boneNextKey->getY(), boneNextKey->getAngle(), boneNextKey->getScaleX(), boneNextKey->getScaleY(), boneNextKey->getSpin());
-            boneNextKeyTransform.lerp(nextKeyTransform, averagingFactor, bone->getSpin());
-            boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(boneTransform.angle, boneNextKeyTransform.angle, bone->getSpin());
+            // If there is no next bone keyframe and we are not looping, then there is no rotation for this
+            // bone. Otherwise calculate linear interpolation to find the rotation angle for the
+            // next keyframe.
+            if(!skipLerp) {
+                float averagingFactor = ((float)nextMainlineKeyTime - (float) bone->getTime()) / ((float) nextKeyTime - (float) bone->getTime());
+                Transform nextKeyTransform(boneNextKey->getX(), boneNextKey->getY(), boneNextKey->getAngle(), boneNextKey->getScaleX(), boneNextKey->getScaleY(), boneNextKey->getSpin());
+                boneNextKeyTransform.lerp(nextKeyTransform, averagingFactor, bone->getSpin());
+                boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(boneTransform.angle, boneNextKeyTransform.angle, bone->getSpin());
+            } else {
+                boneTransform.rotationAngle = 0;
+                boneTransform.spin = 0;
+            }
         } else {
             boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(boneTransform.angle, boneNextKey->getAngle(), bone->getSpin());
         }
@@ -213,7 +225,6 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         // in the Spriter GUI rather than "jerk" back to the first frame after the final frame.
         if(!loopbackFrameAlreadyWritten && (itMain + 1 == timeline.m_owner->m_mainlineKeys.end()) &&
            timeline.m_owner->getLooping() != false) {
-            // TODO Use firstResultObj to output loopback frame here
             if(prevObj == NULL || !firstResultObj->equals(*prevObj)) {
               Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex);
             }
