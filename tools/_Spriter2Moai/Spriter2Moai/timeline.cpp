@@ -241,7 +241,7 @@ void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline
     out << "\t\t\t\t['texture'] = '" << timeline.m_owner->getFileName(resultObj->getFolder(), resultObj->getFile()) << "'," << endl;
     out << "\t\t\t\t['zindex'] = " << z << "," << endl;
     out << "\t\t\t\t['scale_x'] = " << boost::format("%.4f") % resultObj->getScaleX() << "," << endl;
-    out << "\t\t\t\t['scale_y'] = " << boost::format("%.4f") % resultObj->getScaleX() << "," << endl;
+    out << "\t\t\t\t['scale_y'] = " << boost::format("%.4f") % resultObj->getScaleY() << "," << endl;
     out << "\t\t\t\t['time'] = " << time << "," << endl;
     out << "\t\t\t\t['x'] = " << boost::format("%.6f") % resultObj->getX() << "," << endl;
     out << "\t\t\t\t['y'] = " << boost::format("%.6f") % resultObj->getY() << "," << endl;
