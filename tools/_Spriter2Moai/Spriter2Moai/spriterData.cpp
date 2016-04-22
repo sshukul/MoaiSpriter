@@ -82,9 +82,16 @@ File* SpriterData::getFile(unsigned int a_folderIndex, unsigned int a_fileIndex)
 }
 
 std::ostream& operator<< (std::ostream& out, const SpriterData& spriter) {
+    out << "local anim = {" << endl;
     for(vector<Entity*>::const_iterator it = spriter.m_entities.begin(); it != spriter.m_entities.end(); it++) {
         out << *(*it);
+        if(it+1 != spriter.m_entities.end()) {
+            out << ",";
+        }
+        out << endl;
     }
+    out << "}" << endl << endl;
+    out << "return anim";
     return out;
 }
 

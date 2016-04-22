@@ -52,7 +52,6 @@ std::ostream& operator<< (std::ostream& out, const Entity& entity){
     size_t totalAnimations = entity.m_animations.size();
     int animationCounter = 0;
     if(entity.m_animations.size() >= 1) {
-        out << "local anim = {" << endl;
         for(vector<Animation*>::const_iterator it = entity.m_animations.begin(); it != entity.m_animations.end(); it++) {
             animationCounter++;
             
@@ -60,11 +59,7 @@ std::ostream& operator<< (std::ostream& out, const Entity& entity){
         
             if(animationCounter < totalAnimations)
                 out << "," << endl;
-            else
-                out << endl;
         }
-        out << "}" << endl << endl;
-        out << "return anim";
     }
     return out;
 }

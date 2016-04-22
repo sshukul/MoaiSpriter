@@ -203,7 +203,7 @@ void Animation::loadXML(const tinyxml2::XMLElement* a_element) {
     }
 }
 
-std::ostream& operator<< (std::ostream& out, const Animation& animation) {
+std::ostream& operator<< (std::ostream& out, Animation& animation) {
     cout << "Converting animation " << animation.m_name;
     out << "\t['" << animation.m_name << "'] = {" << endl;
     
@@ -214,13 +214,13 @@ std::ostream& operator<< (std::ostream& out, const Animation& animation) {
             objectCnt++;
     }
     
-    int counter = 0;
-    for(vector<Timeline*>::const_iterator it = animation.m_timelines.begin(); it != animation.m_timelines.end(); ++it, ++counter) {
+    animation.objectCounter = 0;
+    for(vector<Timeline*>::const_iterator it = animation.m_timelines.begin(); it != animation.m_timelines.end(); ++it) {
         if((*it)->isTypeObject()) {
-            
+            ++animation.objectCounter;
             out << *(*it);
         
-            if(counter < objectCnt-1)
+            if(animation.objectCounter < objectCnt)
                 out << ",";
             out << endl;
         }

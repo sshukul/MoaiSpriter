@@ -28,12 +28,13 @@ class Animation {
 private:
     Entity* m_owner;
     int m_id;
-    string m_name;
     unsigned int m_length;
     bool m_looping = true;
-    vector<Timeline*> m_timelines;
     
 public:
+    string m_name;
+    vector<Timeline*> m_timelines;
+    int objectCounter = 0;
     vector<MainlineKey*> m_mainlineKeys;
     Animation(): m_owner(NULL), m_id(-1), m_name(""), m_length(0), m_looping(true) {}
     Animation(Entity* a_owner): m_owner(a_owner), m_id(-1), m_name(""), m_length(0), m_looping(true) {}
@@ -52,7 +53,7 @@ public:
     
     void loadXML(const tinyxml2::XMLElement* a_element);
     
-    friend std::ostream& operator<< (std::ostream& out, const Animation& animation);
+    friend std::ostream& operator<< (std::ostream& out, Animation& animation);
     
     void addMainlineKey(MainlineKey* a_key);
     void addTimeline(Timeline* a_timeline);

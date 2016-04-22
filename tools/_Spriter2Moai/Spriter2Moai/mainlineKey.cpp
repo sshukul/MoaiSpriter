@@ -88,7 +88,7 @@ ObjectRef* MainlineKey::findReferenceToObject(unsigned int a_timelineIndex) {
 BoneRef* MainlineKey::getBoneReference(ObjectRef* a_objectRef) {
     int idx = 0;
     for(vector<ObjectRef*>::iterator it = m_objectRefs.begin(); it != m_objectRefs.end(); ++it, ++idx) {
-        if(a_objectRef == (*it)) {
+        if(a_objectRef == (*it) && a_objectRef->getParent() >= 0) {
             return m_boneRefs[a_objectRef->getParent()];
         }
     }
