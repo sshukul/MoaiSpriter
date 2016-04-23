@@ -112,14 +112,35 @@ function spriter(filename, deck, names)
 				if frame.texture then
 					time = frame.time / 1000
 					--printf("Frame %d,  time: %s, texture: %s, x: %d, y: %d, r: %4f, sx: %4f, sy: %4f, px: \n", ii, time, frame.texture, frame.x, frame.y, frame.angle, frame.scale_x, frame.scale_y)
-					idCurve:setKey ( ii, time, names[frame.texture], MOAIEaseType.FLAT)
-					xCurve:setKey  ( ii, time, frame.x, MOAIEaseType.FLAT)
-					yCurve:setKey  ( ii, time, frame.y, MOAIEaseType.FLAT)
-					rCurve:setKey  ( ii, time, frame.angle, MOAIEaseType.FLAT)
-					sxCurve:setKey ( ii, time, frame.scale_x, MOAIEaseType.FLAT)
-					syCurve:setKey ( ii, time, frame.scale_y, MOAIEaseType.FLAT)
-					pxCurve:setKey ( ii, time, frame.pivot_x, MOAIEaseType.FLAT )
-					pyCurve:setKey ( ii, time, frame.pivot_y, MOAIEaseType.FLAT )
+
+					frame.angleWithSpin = frame.angle
+		          	if prevFrame ~= nil then
+		            	if frame.angle < prevFrame.angle and prevFrame.spin == 1 then
+		              		frame.angleWithSpin = frame.angle + 360
+		            	elseif frame.angle > prevFrame.angle and prevFrame.spin == -1 then
+		              		frame.angleWithSpin = frame.angle - 360
+		            	end
+		            
+		            	if prevFrame.angleWithSpin >= 360 and prevFrame.angle < 360 then
+		              		local numRotations = math.floor(math.abs(prevFrame.angleWithSpin / 360))
+		              		if numRotations == 0 then
+		                		numRotations = 1
+		              		end
+		              		frame.angleWithSpin = frame.angleWithSpin + (360 * numRotations)
+		            	elseif prevFrame.angleWithSpin <= 0 and prevFrame.angle > 0 then
+		              		local numRotations = math.floor(math.abs(prevFrame.angleWithSpin / 360)) + 1
+		              		frame.angleWithSpin = frame.angleWithSpin - (360 * numRotations)
+		            	end
+		          	end
+		
+					idCurve:setKey ( ii, time, names[frame.texture], MOAIEaseType.LINEAR)
+					xCurve:setKey  ( ii, time, frame.x, MOAIEaseType.LINEAR)
+					yCurve:setKey  ( ii, time, frame.y, MOAIEaseType.LINEAR)					
+					rCurve:setKey  ( ii, time, frame.angleWithSpin, MOAIEaseType.LINEAR)	
+					sxCurve:setKey ( ii, time, frame.scale_x, MOAIEaseType.LINEAR)
+					syCurve:setKey ( ii, time, frame.scale_y, MOAIEaseType.LINEAR)
+					pxCurve:setKey ( ii, time, frame.pivot_x, MOAIEaseType.LINEAR )
+					pyCurve:setKey ( ii, time, frame.pivot_y, MOAIEaseType.LINEAR )
 				end
 	        end
 	
