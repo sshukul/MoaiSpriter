@@ -13,6 +13,7 @@
 #include <vector>
 #include "tinyxml2.h"
 #include "transform.h"
+#include "point.h"
 
 using namespace std;
 
@@ -35,6 +36,8 @@ private:
     static void writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z);
     
     static float calculateActualRotationAngle(float startAngle, float endAngle, int spin);
+    
+    static Point rotatePoint(float cx,float cy,float angle, Point p);
     
 public:
     Timeline(): m_owner(NULL), m_id(-1), m_name(""), m_objectType("object") {}

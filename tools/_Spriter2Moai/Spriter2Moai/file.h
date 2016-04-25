@@ -20,6 +20,8 @@ private:
     string m_name;
     unsigned int m_width;
     unsigned int m_height;
+    float m_pivot_x = 0.0;
+    float m_pivot_y = 0.0;
     
 public:
     File(): m_id(-1), m_name(""), m_width(0), m_height(0)  {}
@@ -28,6 +30,8 @@ public:
         m_name = a_folder.m_name;
         m_width = a_folder.m_width;
         m_height = a_folder.m_height;
+        m_pivot_x = a_folder.m_pivot_x;
+        m_pivot_y = a_folder.m_pivot_y;
     }
     
     ~File() {}
@@ -40,12 +44,18 @@ public:
     inline void setWidth(unsigned int a_width) {m_width = a_width;}
     inline unsigned int getHeight() const {return m_height;}
     inline void setHeight(unsigned int a_height) {m_height = a_height;}
+    inline float getPivotX() const {return m_pivot_x;}
+    inline void setPivotX(float a_pivot_x) {m_pivot_x = a_pivot_x;}
+    inline float getPivotY() const {return m_pivot_y;}
+    inline void setPivotY(float a_pivot_y) {m_pivot_y = a_pivot_y;}
     
     const File& operator= (const File& a_folder) {
         m_id = a_folder.m_id;
         m_name = a_folder.m_name;
         m_width = a_folder.m_width;
         m_height = a_folder.m_height;
+        m_pivot_x = a_folder.m_pivot_x;
+        m_pivot_y = a_folder.m_pivot_y;
         return *this;
     }
     

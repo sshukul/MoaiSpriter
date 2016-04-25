@@ -255,11 +255,29 @@ void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline
     out << "\t\t\t\t['scale_x'] = " << boost::format("%.4f") % resultObj->getScaleX() << "," << endl;
     out << "\t\t\t\t['scale_y'] = " << boost::format("%.4f") % resultObj->getScaleY() << "," << endl;
     out << "\t\t\t\t['time'] = " << time << "," << endl;
+    
+    // Adjust pivot points to default if they are different.
+    float pivot_x = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getPivotX();
+    float pivot_y = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getPivotY();
+    if(pivot_x != 0.0 || pivot_y != 0.0) {
+        int height = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getHeight();
+        int width = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getWidth();
+        pivot_x = pivot_x * width;
+        pivot_y = pivot_y * height;
+        Point *p = new Point(resultObj->getX() - pivot_x, resultObj->getY() + height - pivot_y);
+        float angle = resultObj->getAngle() * M_PI / 180.0;
+        Point adjustedPivot = Timeline::rotatePoint(resultObj->getX(), resultObj->getY(), angle, *p);
+        
+        resultObj->setX(adjustedPivot.x);
+        resultObj->setY(adjustedPivot.y);
+    }
+    
     out << "\t\t\t\t['x'] = " << boost::format("%.6f") % resultObj->getX() << "," << endl;
     out << "\t\t\t\t['y'] = " << boost::format("%.6f") % resultObj->getY() << "," << endl;
     out << "\t\t\t\t['spin'] = " << resultObj->getSpin() << "," << endl;
-    out << "\t\t\t\t['pivot_x'] = " << 0 << "," << endl;
-    out << "\t\t\t\t['pivot_y'] = " << timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getHeight()<< endl;
+    
+    out << "\t\t\t\t['pivot_x'] = 0," << endl;
+    out << "\t\t\t\t['pivot_y'] = " << timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getHeight() << endl;
     
     out << "\t\t\t}";
     
@@ -267,6 +285,24 @@ void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline
         out << ", ";
     }
     out << endl;
+}
+
+Point Timeline::rotatePoint(float cx,float cy,float angle, Point p) {
+    float s = sin(angle);
+    float c = cos(angle);
+    
+    // translate point back to origin:
+    p.x -= cx;
+    p.y -= cy;
+    
+    // rotate point
+    float xnew = p.x * c - p.y * s;
+    float ynew = p.x * s + p.y * c;
+    
+    // translate point back:
+    p.x = xnew + cx;
+    p.y = ynew + cy;
+    return p;
 }
 
 void Timeline::addObject(Object* a_object) {
