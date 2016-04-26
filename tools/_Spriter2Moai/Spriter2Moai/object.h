@@ -23,9 +23,11 @@ private:
     float m_scaleY;
     unsigned int m_time;
     int m_spin;
+    float m_pivot_x = 0.0;
+    float m_pivot_y = 0.0;
     
 public:
-    Object(): m_id(-1), m_folder(-1), m_file(-1), m_x(0), m_y(0), m_angle(0), m_scaleX(1), m_scaleY(1), m_time(0), m_spin(1) {}
+    Object(): m_id(-1), m_folder(-1), m_file(-1), m_x(0), m_y(0), m_angle(0), m_scaleX(1), m_scaleY(1), m_time(0), m_spin(1), m_pivot_x(0.0), m_pivot_y(0.0) {}
     Object(const Object& rhs);
     ~Object() {}
     
@@ -49,6 +51,10 @@ public:
     inline void setTime(unsigned int a_time) {m_time = a_time;}
     inline int getSpin() const {return m_spin;}
     inline void setSpin(int a_spin) {m_spin = a_spin;}
+    inline float getPivotX() const {return m_pivot_x;}
+    inline void setPivotX(float a_pivot_x) {m_pivot_x = a_pivot_x;}
+    inline float getPivotY() const {return m_pivot_y;}
+    inline void setPivotY(float a_pivot_y) {m_pivot_y = a_pivot_y;}
     
     bool equals(const Object& o);
     Object* clone();

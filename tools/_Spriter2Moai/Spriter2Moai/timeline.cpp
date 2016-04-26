@@ -211,7 +211,9 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                 resultObj->setScaleY(objectTransform.scale_y);
                 resultObj->setX(objectTransform.x);
                 resultObj->setY(objectTransform.y);
-                resultObj->setSpin(objectTransform.spin);
+                resultObj->setSpin(objectTransform.spin);                
+                resultObj->setPivotX(object->getPivotX());
+                resultObj->setPivotY(object->getPivotY());
                 
                 if(itMain == timeline.m_owner->m_mainlineKeys.begin()) {
                     firstResultObj = resultObj;
@@ -219,7 +221,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                 }
                 
                 if(prevObj == NULL || (*it)->getTime() == mKey->getTime() || !resultObj->equals(*prevObj)) {
-                    Timeline::writeObject(mKey->getTime(), resultObj, timeline,  out, &keyNum, z);
+                    Timeline::writeObject(mKey->getTime(), resultObj, timeline,  out, &keyNum, z, false);
                 }
                 
                 if(mKey->getTime() == timeline.m_owner->getLength()) {
@@ -238,7 +240,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         if(!loopbackFrameAlreadyWritten && (itMain + 1 == timeline.m_owner->m_mainlineKeys.end()) &&
            timeline.m_owner->getLooping() != false) {
             if(prevObj == NULL || !firstResultObj->equals(*prevObj)) {
-              Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex);
+              Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex, true);
             }
         }
     }
@@ -246,7 +248,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
     return out;
 }
 
-void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z) {
+void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z, bool noPivotAdjust) {
     out << "\t\t\t[" << ++(*keyNum) << "] = {" << endl;
     
     out << "\t\t\t\t['angle'] = " << boost::format("%.4f") % resultObj->getAngle() << "," << endl;
@@ -257,9 +259,15 @@ void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline
     out << "\t\t\t\t['time'] = " << time << "," << endl;
     
     // Adjust pivot points to default if they are different.
-    float pivot_x = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getPivotX();
-    float pivot_y = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getPivotY();
-    if(pivot_x != 0.0 || pivot_y != 0.0) {
+    float pivot_x = resultObj->getPivotX();
+    float pivot_y = resultObj->getPivotY();
+    
+    if((pivot_x == 0.0 && pivot_y == 0.0)) {
+        pivot_x = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getPivotX();
+        pivot_y = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getPivotY();
+    }
+    
+    if(!noPivotAdjust && (pivot_x != 0.0 || pivot_y != 0.0)) {
         int height = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getHeight();
         int width = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getWidth();
         pivot_x = pivot_x * width;
