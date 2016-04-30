@@ -65,6 +65,7 @@ public:
     void addBone(Bone* a_bone);
     
     Object* getObject(int a_index);
+    Object* getObjectByTime(int time);
     Object* getNextObjectByTime(int time);
     Bone* getBone(int a_index);
     Bone* getBoneByTime(int time);

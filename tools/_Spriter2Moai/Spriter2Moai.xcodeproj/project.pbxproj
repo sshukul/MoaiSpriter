@@ -11,7 +11,6 @@
 		227BE4C71770017D00B59FB4 /* libboost_system-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 227BE4C51770017D00B59FB4 /* libboost_system-mt.dylib */; };
 		229EB48D177575440000FE38 /* transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 229EB48B177575430000FE38 /* transform.cpp */; };
 		22F82AAE176EB30000E92DEE /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82AAD176EB30000E92DEE /* main.cpp */; };
-		22F82AB0176EB30000E92DEE /* Spriter2Moai.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 22F82AAF176EB30000E92DEE /* Spriter2Moai.1 */; };
 		22F82AB9176EB3F200E92DEE /* tinyxml2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82AB6176EB3F200E92DEE /* tinyxml2.cpp */; };
 		22F82ABF176F13C700E92DEE /* entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82ABE176F13C700E92DEE /* entity.cpp */; };
 		22F82AC2176F143700E92DEE /* animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82AC0176F143700E92DEE /* animation.cpp */; };
@@ -24,18 +23,19 @@
 		22F82AD6176FB47B00E92DEE /* object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82AD4176FB47B00E92DEE /* object.cpp */; };
 		22F82AD9176FB48500E92DEE /* boneRef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82AD7176FB48500E92DEE /* boneRef.cpp */; };
 		22F82ADC176FB48E00E92DEE /* bone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82ADA176FB48E00E92DEE /* bone.cpp */; };
+		8E6AD4B21CAA9D41003D321C /* Spriter2Moai in CopyFiles */ = {isa = PBXBuildFile; fileRef = 22F82AAA176EB30000E92DEE /* Spriter2Moai */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		22F82AA8176EB30000E92DEE /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
+			buildActionMask = 12;
+			dstPath = "/Users/saurabhshukul/Documents/Alt-ws/spriter2moai";
 			dstSubfolderSpec = 0;
 			files = (
-				22F82AB0176EB30000E92DEE /* Spriter2Moai.1 in CopyFiles */,
+				8E6AD4B21CAA9D41003D321C /* Spriter2Moai in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -71,6 +71,7 @@
 		22F82AD8176FB48500E92DEE /* boneRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = boneRef.h; sourceTree = "<group>"; };
 		22F82ADA176FB48E00E92DEE /* bone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bone.cpp; sourceTree = "<group>"; };
 		22F82ADB176FB48E00E92DEE /* bone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bone.h; sourceTree = "<group>"; };
+		8EE00C9E1CCE43A300E20488 /* point.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = point.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +144,7 @@
 				22F82ADB176FB48E00E92DEE /* bone.h */,
 				229EB48B177575430000FE38 /* transform.cpp */,
 				229EB48C177575440000FE38 /* transform.h */,
+				8EE00C9E1CCE43A300E20488 /* point.h */,
 			);
 			name = Spriter;
 			sourceTree = "<group>";
@@ -283,14 +285,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = /opt/local/include/;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -298,14 +300,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = /opt/local/include/;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};

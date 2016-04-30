@@ -90,6 +90,16 @@ Object* Animation::getObject(unsigned int a_timelineIndex, unsigned int a_keyInd
     return NULL;
 }
 
+Object* Animation::getObjectByTime(unsigned int a_timelineIndex, int time) {
+    if(a_timelineIndex >= m_timelines.size())
+        return NULL;
+    
+    if(m_timelines[a_timelineIndex] == NULL)
+        return NULL;
+    
+    return m_timelines[a_timelineIndex]->getObjectByTime(time);
+}
+
 Object* Animation::getNextObjectByTime(unsigned int a_timelineIndex, int time) {
     if(a_timelineIndex >= m_timelines.size())
         return NULL;

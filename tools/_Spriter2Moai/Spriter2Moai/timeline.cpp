@@ -88,6 +88,7 @@ Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int leng
         boneTransform = Transform(bone->getX(), bone->getY(), bone->getAngle(), bone->getScaleX(), bone->getScaleY(), bone->getSpin());
         Transform boneNextKeyTransform(bone->getX(), bone->getY(), bone->getAngle(), bone->getScaleX(), bone->getScaleY(), bone->getSpin());
         
+        //Bone* boneNextKey = m_owner->getBone(boneRef->getTimeline(), key);
         Bone* boneNextKey = m_owner->getNextBoneByTime(boneRef->getTimeline(), time);
         if(time != bone->getTime() && boneNextKey != NULL && boneNextKey->getTime() != bone->getTime()) {
             float nextFrameTime = boneNextKey->getTime();
@@ -115,16 +116,20 @@ Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int leng
                 }
             }
             
+            int nextKeyTime = boneNextKey->getTime();
+            if(nextMainlineKeyTime == 0) {
+                nextMainlineKeyTime = length;
+            }
+            if(boneNextKey->getTime() == 0) {
+                nextKeyTime = length;
+            }
+            
             // Find the bone angle at the next keyframe, based on lerping if needed. Use it
             // to calculate the rotation angle and spin for the bone.
-            if(boneNextKey->getTime() != nextMainlineKeyTime) {
-                int nextKeyTime = boneNextKey->getTime();
+            if(nextKeyTime != nextMainlineKeyTime) {
                 bool skipLerp = false;
-                if(boneNextKey->getTime() == 0) {
-                    nextKeyTime = length;
-                    if(looping == false) {
-                        skipLerp = true;
-                    }
+                if(boneNextKey->getTime() == 0 && looping == false) {
+                    skipLerp = true;
                 }
                 // If there is no next bone keyframe and we are not looping, then there is no rotation for this
                 // bone. Otherwise calculate linear interpolation to find the rotation angle for the
@@ -146,6 +151,9 @@ Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int leng
     
     if(boneRef->getParent() != -1) {
         BoneRef* parent = m_owner->getTimedBoneReference(boneRef->getParent(), time);
+        if(parent == NULL) {
+            parent = m_owner->getBoneReference(boneRef->getParent(), key);
+        }
         if(parent != NULL) {
             Transform parentTransform = buildTransform(parent, key, time, length, looping);
             boneTransform.apply_parent_transform(parentTransform);
@@ -166,81 +174,203 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
     
     out << "\t\t[" << timeline.m_owner->objectCounter << "] = {" << endl;
     int keyNum = 0;
-    for(vector<MainlineKey*>::const_iterator itMain = timeline.m_owner->m_mainlineKeys.begin(); itMain != timeline.m_owner->m_mainlineKeys.end(); itMain++) {
+    Object* firstResultObj;
+    int firstZIndex = 0;
+    Object* prevObj;
+    bool loopbackFrameAlreadyWritten = false;
+    bool objectHasNonMainlineFrame = false;
+    vector<Object*>::const_iterator itObj = timeline.m_objects.begin();
+    for(vector<MainlineKey*>::const_iterator itMain = timeline.m_owner->m_mainlineKeys.begin(); itMain != timeline.m_owner->m_mainlineKeys.end() || itObj != timeline.m_objects.end(); ) {
+        unsigned int frameTime;
+        
         MainlineKey* mKey = *itMain;
-        ObjectRef* objectRef = mKey->findReferenceToObject(timeline.m_id);
-        Object* firstResultObj;
-        int firstZIndex = 0;
-        Object* prevObj;
-        bool loopbackFrameAlreadyWritten;
-        for(vector<Object*>::const_iterator it = timeline.m_objects.begin(); it != timeline.m_objects.end(); ) {
-            // For each object we have to check if it is attached to a bone. If it is, then
-            // we need to recursively look up the bone's properties and calculate the values to add to the
-            // object position.
-            
-            Object* object = *it;
-            int mainlineKeyId = mKey->getId();
-            if(objectRef == NULL) {
-                objectRef = timeline.m_owner->findReferenceToObject(timeline.m_id, object->getId(), &mainlineKeyId);
-            }
-            if(object != NULL && objectRef != NULL && objectRef->getKey() == object->getId()) {
-                // search the mainline for any references to this timeline and key pair
-                int z = 0;
-                
-                Transform objectTransform(object->getX(), object->getY(), object->getAngle(), object->getScaleX(), object->getScaleY(), object->getSpin());
-                Object* objectNextKey = timeline.m_owner->getNextObjectByTime(objectRef->getTimeline(), mKey->getTime());
-
-                
-                objectTransform.rotationAngle = Timeline::calculateActualRotationAngle(object->getAngle(), objectNextKey->getAngle(), object->getSpin());
-                
-                BoneRef* boneRef = timeline.m_owner->getTimedBoneReference(objectRef, mKey->getTime());
-                if (boneRef != NULL) {
-                    Transform parentTransform = timeline.buildTransform(boneRef, mainlineKeyId, mKey->getTime(), timeline.m_owner->getLength(), timeline.m_owner->getLooping());
-                    objectTransform.apply_parent_transform(parentTransform);
-                }
-                
-                if (objectRef != NULL) {
-                    z = objectRef->getZIndex();
-                }
-                
-                Object* resultObj = new Object();
-                resultObj->setAngle(fmod(objectTransform.angle, 360));
-                resultObj->setFile(object->getFile());
-                resultObj->setFolder(object->getFolder());
-                resultObj->setScaleX(objectTransform.scale_x);
-                resultObj->setScaleY(objectTransform.scale_y);
-                resultObj->setX(objectTransform.x);
-                resultObj->setY(objectTransform.y);
-                resultObj->setSpin(objectTransform.spin);                
-                resultObj->setPivotX(object->getPivotX());
-                resultObj->setPivotY(object->getPivotY());
-                
-                if(itMain == timeline.m_owner->m_mainlineKeys.begin()) {
-                    firstResultObj = resultObj;
-                    firstZIndex = objectRef->getZIndex();
-                }
-                
-                if(prevObj == NULL || (*it)->getTime() == mKey->getTime() || !resultObj->equals(*prevObj)) {
-                    Timeline::writeObject(mKey->getTime(), resultObj, timeline,  out, &keyNum, z, false);
-                }
-                
-                if(mKey->getTime() == timeline.m_owner->getLength()) {
-                    loopbackFrameAlreadyWritten = true;
-                }
-
-                ++it;
-                prevObj = resultObj;
-            } else {
-                ++it;
-            }
+        Object* object = *itObj;
+        
+        int mainlineKeyTime;
+        int objectTime;
+        bool mKeyHasEnded = false;
+        bool objectListHasEnded = false;
+        if(mKey == NULL || itMain == timeline.m_owner->m_mainlineKeys.end()) {
+            mainlineKeyTime = timeline.m_owner->getLength();
+            mKey = *(itMain - 1);
+            mKeyHasEnded = true;
+        } else {
+            mainlineKeyTime = mKey->getTime();
         }
+        
+        if(object == NULL || itObj == timeline.m_objects.end()) {
+            objectTime = timeline.m_owner->getLength();
+            objectListHasEnded = true;
+            //object = *(itObj - 1);
+        } else {
+            objectTime = object->getTime();
+        }
+
+        
+        if(objectTime < mainlineKeyTime) {
+            frameTime = objectTime;
+            objectHasNonMainlineFrame = true;
+        } else {
+            frameTime = mainlineKeyTime;
+        }
+
+        ObjectRef* objectRef = mKey->findReferenceToObject(timeline.m_id);
+        if(object == NULL || itObj == timeline.m_objects.end()) {
+            object = timeline.m_owner->getObject(objectRef->getTimeline(), objectRef->getKey());
+        }
+
+        
+        // For each object we have to check if it is attached to a bone. If it is, then
+        // we need to recursively look up the bone's properties and calculate the values to add to the
+        // object position.
+        int mainlineKeyId = mKey->getId();
+    
+        //Object* object = *it;
+        //Object* object = timeline.m_owner->getObjectByTime(objectRef->getTimeline(), frameTime);
+        if(objectHasNonMainlineFrame) {
+            mainlineKeyId = object->getId();
+        }
+    
+        /*if(objectRef->getKey() != mainlineKeyId && !objectHasNonMainlineFrame) {
+            object = timeline.m_owner->getObject(objectRef->getTimeline(), objectRef->getKey());
+        }*/
+
+        if(objectRef == NULL) {
+            objectRef = timeline.m_owner->findReferenceToObject(timeline.m_id, object->getId(), &mainlineKeyId);
+        }
+    
+        if(object != NULL && objectRef != NULL) {
+            // search the mainline for any references to this timeline and key pair
+            int z = 0;
+            
+            Transform objectTransform(object->getX(), object->getY(), object->getAngle(), object->getScaleX(), object->getScaleY(), object->getSpin());
+            Transform objectNextKeyTransform(object->getX(), object->getY(), object->getAngle(), object->getScaleX(), object->getScaleY(), object->getSpin());
+            
+            Object* objectNextKey = timeline.m_owner->getNextObjectByTime(objectRef->getTimeline(), frameTime);
+            
+            if(frameTime != object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != object->getTime()) {
+                float nextFrameTime = objectNextKey->getTime();
+                if(!(timeline.m_owner->getLooping() == false && nextFrameTime == 0)) {
+                    if(nextFrameTime == 0) {
+                        nextFrameTime = timeline.m_owner->getLength();
+                    }
+                    float averagingFactor = ((float)frameTime - (float)object->getTime()) / (nextFrameTime - (float)object->getTime());
+                    Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin());
+                    objectTransform.lerp(nextKeyTransform, averagingFactor, object->getSpin());
+                }
+            }
+            
+            //objectTransform.rotationAngle = Timeline::calculateActualRotationAngle(object->getAngle(), objectNextKey->getAngle(), object->getSpin());
+            
+            if(objectNextKey != NULL && objectNextKey->getTime() != object->getTime()) {
+                int nextMainlineKeyTime = 0;
+                for(vector<MainlineKey*>::const_iterator it = timeline.m_owner->m_mainlineKeys.begin(); it != timeline.m_owner->m_mainlineKeys.end(); it++) {
+                    if((*it)->getTime() == frameTime) {
+                        if(it+1 != timeline.m_owner->m_mainlineKeys.end()) {
+                            it++;
+                            nextMainlineKeyTime = (*it)->getTime();
+                            break;
+                        }
+                    }
+                }
+                
+                int nextKeyTime = objectNextKey->getTime();
+                if(nextMainlineKeyTime == 0) {
+                    nextMainlineKeyTime = timeline.m_owner->getLength();
+                }
+                if(objectNextKey->getTime() == 0) {
+                    nextKeyTime = timeline.m_owner->getLength();
+                }
+                
+                // Find the object angle at the next keyframe, based on lerping if needed. Use it
+                // to calculate the rotation angle and spin for the object.
+                if(nextKeyTime != nextMainlineKeyTime) {
+                    bool skipLerp = false;
+                    if(objectNextKey->getTime() == 0 && timeline.m_owner->getLooping() == false) {
+                        skipLerp = true;
+                    }
+                    // If there is no next object keyframe and we are not looping, then there is no
+                    // rotation for this object. Otherwise calculate linear interpolation to find
+                    // the rotation angle for the next keyframe.
+                    if(!skipLerp) {
+                        float averagingFactor = ((float)nextMainlineKeyTime - (float) object->getTime()) / ((float) nextKeyTime - (float) object->getTime());
+                        Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin());
+                        objectNextKeyTransform.lerp(nextKeyTransform, averagingFactor, object->getSpin());
+                        objectTransform.rotationAngle = Timeline::calculateActualRotationAngle(objectTransform.angle, objectNextKeyTransform.angle, object->getSpin());
+                    } else {
+                        objectTransform.rotationAngle = 0;
+                        objectTransform.spin = 0;
+                    }
+                } else {
+                    objectTransform.rotationAngle = Timeline::calculateActualRotationAngle(objectTransform.angle, objectNextKey->getAngle(), object->getSpin());
+                }
+            }
+            
+            BoneRef* boneRef = timeline.m_owner->getTimedBoneReference(objectRef, frameTime);
+            if(boneRef == NULL) {
+                boneRef = timeline.m_owner->getBoneReference(objectRef, mainlineKeyId);
+            }
+            //BoneRef* boneRef = timeline.m_owner->getBoneReference(objectRef, mainlineKeyId);
+            if (boneRef != NULL) {
+                Transform parentTransform = timeline.buildTransform(boneRef, mainlineKeyId, frameTime, timeline.m_owner->getLength(), timeline.m_owner->getLooping());
+                objectTransform.apply_parent_transform(parentTransform);
+            }
+            
+            if (objectRef != NULL) {
+                z = objectRef->getZIndex();
+            }
+            
+            Object* resultObj = new Object();
+            resultObj->setAngle(fmod(objectTransform.angle, 360));
+            resultObj->setFile(object->getFile());
+            resultObj->setFolder(object->getFolder());
+            resultObj->setScaleX(objectTransform.scale_x);
+            resultObj->setScaleY(objectTransform.scale_y);
+            resultObj->setX(objectTransform.x);
+            resultObj->setY(objectTransform.y);
+            resultObj->setSpin(objectTransform.spin);
+            resultObj->setPivotX(object->getPivotX());
+            resultObj->setPivotY(object->getPivotY());
+            
+            if(itMain == timeline.m_owner->m_mainlineKeys.begin()) {
+                firstResultObj = resultObj;
+                firstZIndex = objectRef->getZIndex();
+            }
+            
+            if(prevObj == NULL || object->getTime() == frameTime || !resultObj->equals(*prevObj)) {
+                Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, false);
+            }
+            
+            if(frameTime == timeline.m_owner->getLength()) {
+                loopbackFrameAlreadyWritten = true;
+            }
+
+            prevObj = resultObj;
+        }
+        
         // This bit adds a "loopback" keyframe which is the same as the first frame,
         // if the last frame isn't specified as a keyframe. This makes it tween and loop smoothly like
         // in the Spriter GUI rather than "jerk" back to the first frame after the final frame.
-        if(!loopbackFrameAlreadyWritten && (itMain + 1 == timeline.m_owner->m_mainlineKeys.end()) &&
-           timeline.m_owner->getLooping() != false) {
+        if(!loopbackFrameAlreadyWritten && (((itMain + 1 == timeline.m_owner->m_mainlineKeys.end()) && objectListHasEnded) || ((itObj + 1 == timeline.m_objects.end()) && mKeyHasEnded)) && timeline.m_owner->getLooping() != false) {
             if(prevObj == NULL || !firstResultObj->equals(*prevObj)) {
               Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex, true);
+            }
+        }
+        
+        if(objectHasNonMainlineFrame) {
+            objectHasNonMainlineFrame = false;
+        }
+        
+        if(objectTime < mainlineKeyTime) {
+            itObj++;
+        } else if(mainlineKeyTime < objectTime) {
+            itMain++;
+        } else {
+            if((*itObj) != NULL && itObj != timeline.m_objects.end()) {
+                itObj++;
+            }
+            if((*itMain) != NULL && itMain != timeline.m_owner->m_mainlineKeys.end()) {
+                itMain++;
             }
         }
     }
@@ -373,6 +503,22 @@ Bone* Timeline::getNextBoneByTime(int time) {
             return (*it);
         } else if(it+1 == m_bones.end()) {
             it = m_bones.begin();
+            return (*it);
+        }
+    }
+    return NULL;
+}
+
+Object* Timeline::getObjectByTime(int time) {
+    if(!isTypeObject())
+        return NULL;
+    for(vector<Object*>::const_iterator it = m_objects.begin(); it != m_objects.end(); it++) {
+        if((*it)->getTime() == time) {
+            return (*it);
+        } else if((*it)->getTime() > time) {
+            it--;
+            return (*it);
+        } else if(it+1 == m_objects.end()) {
             return (*it);
         }
     }
