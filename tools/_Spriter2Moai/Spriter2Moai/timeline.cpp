@@ -201,7 +201,6 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         if(object == NULL || itObj == timeline.m_objects.end()) {
             objectTime = timeline.m_owner->getLength();
             objectListHasEnded = true;
-            //object = *(itObj - 1);
         } else {
             objectTime = object->getTime();
         }
@@ -225,15 +224,9 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         // object position.
         int mainlineKeyId = mKey->getId();
     
-        //Object* object = *it;
-        //Object* object = timeline.m_owner->getObjectByTime(objectRef->getTimeline(), frameTime);
         if(objectHasNonMainlineFrame) {
             mainlineKeyId = object->getId();
         }
-    
-        /*if(objectRef->getKey() != mainlineKeyId && !objectHasNonMainlineFrame) {
-            object = timeline.m_owner->getObject(objectRef->getTimeline(), objectRef->getKey());
-        }*/
 
         if(objectRef == NULL) {
             objectRef = timeline.m_owner->findReferenceToObject(timeline.m_id, object->getId(), &mainlineKeyId);
@@ -259,8 +252,6 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                     objectTransform.lerp(nextKeyTransform, averagingFactor, object->getSpin());
                 }
             }
-            
-            //objectTransform.rotationAngle = Timeline::calculateActualRotationAngle(object->getAngle(), objectNextKey->getAngle(), object->getSpin());
             
             if(objectNextKey != NULL && objectNextKey->getTime() != object->getTime()) {
                 int nextMainlineKeyTime = 0;
@@ -310,7 +301,6 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             if(boneRef == NULL) {
                 boneRef = timeline.m_owner->getBoneReference(objectRef, mainlineKeyId);
             }
-            //BoneRef* boneRef = timeline.m_owner->getBoneReference(objectRef, mainlineKeyId);
             if (boneRef != NULL) {
                 Transform parentTransform = timeline.buildTransform(boneRef, mainlineKeyId, frameTime, timeline.m_owner->getLength(), timeline.m_owner->getLooping());
                 objectTransform.apply_parent_transform(parentTransform);
