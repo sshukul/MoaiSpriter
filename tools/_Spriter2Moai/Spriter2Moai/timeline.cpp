@@ -174,22 +174,24 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
     
     out << "\t\t[" << timeline.m_owner->objectCounter << "] = {" << endl;
     int keyNum = 0;
-    Object* firstResultObj;
+    Object* firstResultObj = NULL;
     int firstZIndex = 0;
-    Object* prevObj;
+    Object* prevObj = NULL;
     bool loopbackFrameAlreadyWritten = false;
     bool objectHasNonMainlineFrame = false;
+    int prevObjTime = 0;
     vector<Object*>::const_iterator itObj = timeline.m_objects.begin();
     for(vector<MainlineKey*>::const_iterator itMain = timeline.m_owner->m_mainlineKeys.begin(); itMain != timeline.m_owner->m_mainlineKeys.end() || itObj != timeline.m_objects.end(); ) {
-        unsigned int frameTime;
+        unsigned int frameTime = 0;
         
         MainlineKey* mKey = *itMain;
         Object* object = *itObj;
         
-        int mainlineKeyTime;
-        int objectTime;
+        int mainlineKeyTime = 0;
+        int objectTime = 0;
         bool mKeyHasEnded = false;
         bool objectListHasEnded = false;
+        bool skipFrame = false;
         if(mKey == NULL || itMain == timeline.m_owner->m_mainlineKeys.end()) {
             mainlineKeyTime = timeline.m_owner->getLength();
             mKey = *(itMain - 1);
@@ -204,7 +206,6 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         } else {
             objectTime = object->getTime();
         }
-
         
         if(objectTime < mainlineKeyTime) {
             frameTime = objectTime;
@@ -218,7 +219,10 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             object = timeline.m_owner->getObject(objectRef->getTimeline(), objectRef->getKey());
         }
 
-        
+        if(objectTime < prevObjTime ) {
+            //objectTime = timeline.m_owner->getLength();
+            skipFrame = true;
+        }
         // For each object we have to check if it is attached to a bone. If it is, then
         // we need to recursively look up the bone's properties and calculate the values to add to the
         // object position.
@@ -232,7 +236,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             objectRef = timeline.m_owner->findReferenceToObject(timeline.m_id, object->getId(), &mainlineKeyId);
         }
     
-        if(object != NULL && objectRef != NULL) {
+        if(object != NULL && objectRef != NULL && !skipFrame) {
             // search the mainline for any references to this timeline and key pair
             int z = 0;
             
@@ -327,7 +331,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                 firstZIndex = objectRef->getZIndex();
             }
             
-            if(prevObj == NULL || object->getTime() == frameTime || !resultObj->equals(*prevObj)) {
+            if(prevObj == NULL || !resultObj->equals(*prevObj)) {
                 Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, false);
             }
             
@@ -363,6 +367,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                 itMain++;
             }
         }
+        prevObjTime = objectTime;
     }
     out << "\t\t}";
     return out;
@@ -387,25 +392,19 @@ void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline
         pivot_y = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getPivotY();
     }
     
-    if(!noPivotAdjust && (pivot_x != 0.0 || pivot_y != 0.0)) {
+    if((pivot_x != 0.0 || pivot_y != 0.0)) {
         int height = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getHeight();
         int width = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getWidth();
         pivot_x = pivot_x * width;
         pivot_y = pivot_y * height;
-        Point *p = new Point(resultObj->getX() - pivot_x, resultObj->getY() + height - pivot_y);
-        float angle = resultObj->getAngle() * M_PI / 180.0;
-        Point adjustedPivot = Timeline::rotatePoint(resultObj->getX(), resultObj->getY(), angle, *p);
-        
-        resultObj->setX(adjustedPivot.x);
-        resultObj->setY(adjustedPivot.y);
     }
     
     out << "\t\t\t\t['x'] = " << boost::format("%.6f") % resultObj->getX() << "," << endl;
     out << "\t\t\t\t['y'] = " << boost::format("%.6f") % resultObj->getY() << "," << endl;
     out << "\t\t\t\t['spin'] = " << resultObj->getSpin() << "," << endl;
     
-    out << "\t\t\t\t['pivot_x'] = 0," << endl;
-    out << "\t\t\t\t['pivot_y'] = " << timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getHeight() << endl;
+    out << "\t\t\t\t['pivot_x'] = " << pivot_x << "," << endl;
+    out << "\t\t\t\t['pivot_y'] = " << pivot_y << endl;
     
     out << "\t\t\t}";
     
