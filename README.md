@@ -53,7 +53,7 @@ For 64 bit Macs, binary is supplied, build environment optional.
 3. To use your own Spriter animations, run the Spriter2Moai exporter under /exporter with your scml file as a parameter. 
 Copy the resuling lua file into your moai game project and set up as shown in sample project.
 
-4. Pack your sprite parts using TexturePacker and copy resulting lua and asset file to your game project.
+4. Pack your sprite parts using TexturePacker, export for Moai, and copy resulting lua and packed asset files to your game project.
 
 5. Clone the submodule moai_spriter_plugin project (https://github.com/sshukul/moai_spriter_plugin) directly into your Moai 
 game and integrate as shown in sample project. Keep as submodule and update from repo when newer features are released.
