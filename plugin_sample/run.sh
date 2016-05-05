@@ -25,5 +25,4 @@ if [ ! -f "$MOAI_CONFIG/config.lua" ]; then
 fi
 
 # Run moai
-#/Users/saurabhshukul/Documents/Alt-ws/moai-dev_nov_15/build/build-osx/Release/moai main.lua
 $MOAI_BIN/moai $MOAI_CONFIG/config.lua main.lua

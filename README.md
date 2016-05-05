@@ -27,8 +27,8 @@ This project contains 3 parts.
 Mac binary and XCode project supplied, Windows or Linux has to be compiled separately. 
 
 2. Raw spriter data and assets - /raw - For a complex scorpion animated character, with detailed multi-level bone structure, 
-pivot points, rotatation angles > 360 degrees etc. for demonstration of features. Assets have been colored and modified to discourage re-use in games, they 
-are for demonstration purposes only. 
+pivot points, rotatation angles > 360 degrees etc. for demonstration of features. Assets have been silhouetted to discourage re-use 
+in games, they are for demonstration purposes only. 
 
 3. Demo project and Moai integration Plugin - /plugin_sample - Sample Moai lua project which runs exported scorpion animation. 
 The sample project also has a submodule called moai_spriter_plugin which will need to be cloned in any of your Moai games
@@ -39,7 +39,7 @@ that want to integrate with Spriter.
 2. TexturePacker (https://www.codeandweb.com/texturepacker) to compress sprite parts into single sheet. 
 
 For Windows and Linux -
-3. C++ and build environment (Cmake or Visual Studio etc.) to generate executable binaries for the exporter
+C++ and build environment (Cmake or Visual Studio etc.) to generate executable binaries for the exporter
 
 or 
 
@@ -57,3 +57,11 @@ Copy the resuling lua file into your moai game project and set up as shown in sa
 
 5. Clone the submodule moai_spriter_plugin project (https://github.com/sshukul/moai_spriter_plugin) directly into your Moai 
 game and integrate as shown in sample project. Keep as submodule and update from repo when newer features are released.
+
+## Credits:
+Thanks to github users miletbaker (https://github.com/miletbaker/spriter2moai)
+and sumuchan (https://github.com/samuchan/NekoPunch)
+for providing the previous versions of the Moai plugin and exporter upon which this was built.
+
+##Licence
+These files unless specified in the source header are distributed under the MPL-2.0 licence (http://opensource.org/licenses/MPL-2.0)
