@@ -1,5 +1,6 @@
 # MoaiSpriter
 Full Spriter (http://www.brashmonkey.com/spriter.htm) implementation for the Moai SDK game engine (http://www.getmoai.com) .
+Current version - 1.0.0
 
 ## Features supported in v1.0.0:
 - Bones based or boneless animation, with any level of nesting and complexity.
@@ -38,8 +39,10 @@ that want to integrate with Spriter.
 2. TexturePacker (https://www.codeandweb.com/texturepacker) to compress sprite parts into single sheet. 
 
 For Windows and Linux -
-2. C++ and build environment (Cmake or Visual Studio etc.) to generate executable binaries for the exporter
+3. C++ and build environment (Cmake or Visual Studio etc.) to generate executable binaries for the exporter
+
 or 
+
 For 64 bit Macs, binary is supplied, build environment optional.
 
 ## Setup:
