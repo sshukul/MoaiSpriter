@@ -60,7 +60,7 @@ game and integrate as shown in sample project. Keep as submodule and update from
 
 ## Credits:
 Thanks to github users miletbaker (https://github.com/miletbaker/spriter2moai)
-and sumuchan (https://github.com/samuchan/NekoPunch)
+and samuchan (https://github.com/samuchan/NekoPunch)
 for providing the previous versions of the Moai plugin and exporter upon which this was built.
 
 ##Licence
