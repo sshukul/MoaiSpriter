@@ -48,7 +48,7 @@ For 64 bit Macs, binary is supplied, build environment optional.
 ## Setup:
 1. Clone this repo using `git clone --recursive`, as you will need the plugin submodule to be cloned as well
 
-2. If you have Moai set up, run the run.sh script to see the sample project.
+2. If you have Moai set up, run the run.sh script (on Mac and Linux) or run.bat (on Windows) to run the sample project and see it working.
 
 3. To use your own Spriter animations, run the Spriter2Moai exporter under /exporter with your scml file as a parameter. 
 Copy the resuling lua file into your moai game project and set up as shown in sample project.
