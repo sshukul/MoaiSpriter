@@ -66,6 +66,14 @@
             argument = "/Users/saurabhshukul/Documents/Alt-ws/spriter2moai/pirate_boss/pirate_boss.scml"
             isEnabled = "YES">
          </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/saurabhshukul/Documents/Alt-ws/spriter2moai/main_char/main_char.scml"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/saurabhshukul/Documents/Alt-ws/spriter2moai/scorpion/scorpion.scml"
+            isEnabled = "NO">
+         </CommandLineArgument>
       </CommandLineArguments>
       <EnvironmentVariables>
          <EnvironmentVariable

@@ -24,6 +24,9 @@
 		22F82AD9176FB48500E92DEE /* boneRef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82AD7176FB48500E92DEE /* boneRef.cpp */; };
 		22F82ADC176FB48E00E92DEE /* bone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F82ADA176FB48E00E92DEE /* bone.cpp */; };
 		8E6AD4B21CAA9D41003D321C /* Spriter2Moai in CopyFiles */ = {isa = PBXBuildFile; fileRef = 22F82AAA176EB30000E92DEE /* Spriter2Moai */; };
+		8EB32CBF1CDDAC16005DAB27 /* tagList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8EB32CBD1CDDAC16005DAB27 /* tagList.cpp */; };
+		8EB32CC21CDDAD7B005DAB27 /* tag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8EB32CC01CDDAD7B005DAB27 /* tag.cpp */; };
+		8EB32CC51CDDD11F005DAB27 /* taglineKey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8EB32CC31CDDD11F005DAB27 /* taglineKey.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -71,6 +74,13 @@
 		22F82AD8176FB48500E92DEE /* boneRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = boneRef.h; sourceTree = "<group>"; };
 		22F82ADA176FB48E00E92DEE /* bone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bone.cpp; sourceTree = "<group>"; };
 		22F82ADB176FB48E00E92DEE /* bone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bone.h; sourceTree = "<group>"; };
+		8EB32CBC1CDD66FC005DAB27 /* Spriter2MoaiConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Spriter2MoaiConfig.h; sourceTree = "<group>"; };
+		8EB32CBD1CDDAC16005DAB27 /* tagList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tagList.cpp; sourceTree = "<group>"; };
+		8EB32CBE1CDDAC16005DAB27 /* tagList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tagList.h; sourceTree = "<group>"; };
+		8EB32CC01CDDAD7B005DAB27 /* tag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tag.cpp; sourceTree = "<group>"; };
+		8EB32CC11CDDAD7B005DAB27 /* tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tag.h; sourceTree = "<group>"; };
+		8EB32CC31CDDD11F005DAB27 /* taglineKey.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = taglineKey.cpp; sourceTree = "<group>"; };
+		8EB32CC41CDDD11F005DAB27 /* taglineKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = taglineKey.h; sourceTree = "<group>"; };
 		8EE00C9E1CCE43A300E20488 /* point.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = point.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -112,6 +122,7 @@
 				22F82AB6176EB3F200E92DEE /* tinyxml2.cpp */,
 				22F82AB7176EB3F200E92DEE /* tinyxml2.h */,
 				22F82AAD176EB30000E92DEE /* main.cpp */,
+				8EB32CBC1CDD66FC005DAB27 /* Spriter2MoaiConfig.h */,
 				22F82AAF176EB30000E92DEE /* Spriter2Moai.1 */,
 			);
 			path = Spriter2Moai;
@@ -125,6 +136,10 @@
 				22F82AC8176F2FAC00E92DEE /* file.cpp */,
 				22F82ABC176F0D1C00E92DEE /* file.h */,
 				22F82ABE176F13C700E92DEE /* entity.cpp */,
+				8EB32CBD1CDDAC16005DAB27 /* tagList.cpp */,
+				8EB32CBE1CDDAC16005DAB27 /* tagList.h */,
+				8EB32CC01CDDAD7B005DAB27 /* tag.cpp */,
+				8EB32CC11CDDAD7B005DAB27 /* tag.h */,
 				22F82ABD176F12D200E92DEE /* entity.h */,
 				22F82AC0176F143700E92DEE /* animation.cpp */,
 				22F82AC1176F143700E92DEE /* animation.h */,
@@ -145,6 +160,8 @@
 				229EB48B177575430000FE38 /* transform.cpp */,
 				229EB48C177575440000FE38 /* transform.h */,
 				8EE00C9E1CCE43A300E20488 /* point.h */,
+				8EB32CC31CDDD11F005DAB27 /* taglineKey.cpp */,
+				8EB32CC41CDDD11F005DAB27 /* taglineKey.h */,
 			);
 			name = Spriter;
 			sourceTree = "<group>";
@@ -202,10 +219,13 @@
 			files = (
 				22F82AAE176EB30000E92DEE /* main.cpp in Sources */,
 				22F82AB9176EB3F200E92DEE /* tinyxml2.cpp in Sources */,
+				8EB32CBF1CDDAC16005DAB27 /* tagList.cpp in Sources */,
 				22F82ABF176F13C700E92DEE /* entity.cpp in Sources */,
+				8EB32CC21CDDAD7B005DAB27 /* tag.cpp in Sources */,
 				22F82AC2176F143700E92DEE /* animation.cpp in Sources */,
 				22F82AC5176F25C300E92DEE /* spriterData.cpp in Sources */,
 				22F82AC7176F2CD700E92DEE /* folder.cpp in Sources */,
+				8EB32CC51CDDD11F005DAB27 /* taglineKey.cpp in Sources */,
 				22F82AC9176F2FAC00E92DEE /* file.cpp in Sources */,
 				22F82ACC176FA7EC00E92DEE /* mainlineKey.cpp in Sources */,
 				22F82ACF176FA7F700E92DEE /* timeline.cpp in Sources */,

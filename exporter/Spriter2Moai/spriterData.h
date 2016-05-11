@@ -18,6 +18,8 @@ using namespace std;
 class XMLElement;
 class Folder;
 class Entity;
+class TagList;
+class Tag;
 class File;
 
 class SpriterData {
@@ -27,6 +29,7 @@ private:
     string m_generatorVersion;
     vector<Folder*> m_folders;
     vector<Entity*> m_entities;
+    vector<TagList*> m_tagLists;
     
 public:
     SpriterData () {}
@@ -38,6 +41,8 @@ public:
     
     void addFolder(Folder* a_folder);
     void addEntity(Entity* a_entity);
+    void addTagList(TagList* a_tagList);
+    void populateTagNameFromTagList(Tag* a_tag);
     
     string getFilePath(unsigned int a_folderIndex, unsigned int a_fileIndex);
     File* getFile(unsigned int a_folderIndex, unsigned int a_fileIndex);

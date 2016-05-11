@@ -172,7 +172,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
     if(!timeline.isTypeObject())
         return out;
     
-    out << "\t\t[" << timeline.m_owner->objectCounter << "] = {" << endl;
+    out << "\t\t\t[" << timeline.m_owner->objectCounter << "] = {" << endl;
     int keyNum = 0;
     Object* firstResultObj = NULL;
     int firstZIndex = 0;
@@ -214,8 +214,13 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             frameTime = mainlineKeyTime;
         }
 
+        int mainlineKeyId = mKey->getId();
         ObjectRef* objectRef = mKey->findReferenceToObject(timeline.m_id);
-        if(object == NULL || itObj == timeline.m_objects.end()) {
+        
+        if(objectRef == NULL && object != NULL && itObj != timeline.m_objects.end()) {
+            objectRef = timeline.m_owner->findReferenceToObject(timeline.m_id, object->getId(), &mainlineKeyId);
+        }
+        if((object == NULL || itObj == timeline.m_objects.end()) && objectRef != NULL) {
             object = timeline.m_owner->getObject(objectRef->getTimeline(), objectRef->getKey());
         }
 
@@ -226,14 +231,9 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         // For each object we have to check if it is attached to a bone. If it is, then
         // we need to recursively look up the bone's properties and calculate the values to add to the
         // object position.
-        int mainlineKeyId = mKey->getId();
     
-        if(objectHasNonMainlineFrame) {
+        if(objectHasNonMainlineFrame && object != NULL) {
             mainlineKeyId = object->getId();
-        }
-
-        if(objectRef == NULL) {
-            objectRef = timeline.m_owner->findReferenceToObject(timeline.m_id, object->getId(), &mainlineKeyId);
         }
     
         if(object != NULL && objectRef != NULL && !skipFrame) {
@@ -332,7 +332,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             }
             
             if(prevObj == NULL || !resultObj->equals(*prevObj)) {
-                Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, false);
+                Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevObj);
             }
             
             if(frameTime == timeline.m_owner->getLength()) {
@@ -347,7 +347,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         // in the Spriter GUI rather than "jerk" back to the first frame after the final frame.
         if(!loopbackFrameAlreadyWritten && (((itMain + 1 == timeline.m_owner->m_mainlineKeys.end()) && objectListHasEnded) || ((itObj + 1 == timeline.m_objects.end()) && mKeyHasEnded)) && timeline.m_owner->getLooping() != false) {
             if(prevObj == NULL || !firstResultObj->equals(*prevObj)) {
-              Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex, true);
+              Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex, prevObj);
             }
         }
         
@@ -369,27 +369,32 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         }
         prevObjTime = objectTime;
     }
-    out << "\t\t}";
+    out << "\t\t\t}";
     return out;
 }
 
-void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z, bool noPivotAdjust) {
-    out << "\t\t\t[" << ++(*keyNum) << "] = {" << endl;
+void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z, Object* prevObj) {
+    out << "\t\t\t\t[" << ++(*keyNum) << "] = {" << endl;
     
-    out << "\t\t\t\t['angle'] = " << boost::format("%.4f") % resultObj->getAngle() << "," << endl;
-    out << "\t\t\t\t['texture'] = '" << timeline.m_owner->getFileName(resultObj->getFolder(), resultObj->getFile()) << "'," << endl;
-    out << "\t\t\t\t['zindex'] = " << z << "," << endl;
-    out << "\t\t\t\t['scale_x'] = " << boost::format("%.4f") % resultObj->getScaleX() << "," << endl;
-    out << "\t\t\t\t['scale_y'] = " << boost::format("%.4f") % resultObj->getScaleY() << "," << endl;
-    out << "\t\t\t\t['time'] = " << time << "," << endl;
+    out << "\t\t\t\t\t['angle'] = " << boost::format("%.4f") % resultObj->getAngle() << "," << endl;
+    out << "\t\t\t\t\t['texture'] = '" << timeline.m_owner->getFileName(resultObj->getFolder(), resultObj->getFile()) << "'," << endl;
+    out << "\t\t\t\t\t['zindex'] = " << z << "," << endl;
+    out << "\t\t\t\t\t['scale_x'] = " << boost::format("%.4f") % resultObj->getScaleX() << "," << endl;
+    out << "\t\t\t\t\t['scale_y'] = " << boost::format("%.4f") % resultObj->getScaleY() << "," << endl;
+    out << "\t\t\t\t\t['time'] = " << time << "," << endl;
     
     // Adjust pivot points to default if they are different.
     float pivot_x = resultObj->getPivotX();
     float pivot_y = resultObj->getPivotY();
     
     if((pivot_x == 0.0 && pivot_y == 0.0)) {
-        pivot_x = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getPivotX();
-        pivot_y = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getPivotY();
+        if(prevObj != NULL && (prevObj->getPivotX() != 0.0 || prevObj->getPivotY() != 0.0)) {
+            pivot_x = prevObj->getPivotX();
+            pivot_y = prevObj->getPivotY();
+        } else {
+            pivot_x = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getPivotX();
+            pivot_y = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getPivotY();
+        }
     }
     
     if((pivot_x != 0.0 || pivot_y != 0.0)) {
@@ -399,18 +404,18 @@ void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline
         pivot_y = pivot_y * height;
     }
     
-    out << "\t\t\t\t['x'] = " << boost::format("%.6f") % resultObj->getX() << "," << endl;
-    out << "\t\t\t\t['y'] = " << boost::format("%.6f") % resultObj->getY() << "," << endl;
-    out << "\t\t\t\t['spin'] = " << resultObj->getSpin() << "," << endl;
+    out << "\t\t\t\t\t['x'] = " << boost::format("%.6f") % resultObj->getX() << "," << endl;
+    out << "\t\t\t\t\t['y'] = " << boost::format("%.6f") % resultObj->getY() << "," << endl;
+    out << "\t\t\t\t\t['spin'] = " << resultObj->getSpin() << "," << endl;
     
-    out << "\t\t\t\t['pivot_x'] = " << pivot_x << "," << endl;
-    out << "\t\t\t\t['pivot_y'] = " << pivot_y << endl;
+    out << "\t\t\t\t\t['pivot_x'] = " << pivot_x << "," << endl;
+    out << "\t\t\t\t\t['pivot_y'] = " << pivot_y << endl;
     
-    out << "\t\t\t}";
+    out << "\t\t\t\t}";
     
-    if(time != timeline.m_owner->getLength()) {
+    //if(time != timeline.m_owner->getLength()) {
         out << ", ";
-    }
+    //}
     out << endl;
 }
 

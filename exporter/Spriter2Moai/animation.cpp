@@ -10,6 +10,8 @@
 #include <boost/filesystem.hpp>
 #include "animation.h"
 #include "mainlineKey.h"
+#include "taglineKey.h"
+#include "tag.h"
 #include "timeline.h"
 #include "entity.h"
 #include "spriterData.h"
@@ -27,6 +29,11 @@ Animation::~Animation() {
     }
     m_mainlineKeys.clear();
     
+    for (vector<TaglineKey*>::iterator it = m_taglineKeys.begin(); it != m_taglineKeys.end(); it++) {
+        delete (*it);
+    }
+    m_taglineKeys.clear();
+    
     for (vector<Timeline*>::iterator it = m_timelines.begin(); it != m_timelines.end(); it++) {
         delete (*it);
     }
@@ -35,6 +42,10 @@ Animation::~Animation() {
 
 void Animation::addMainlineKey(MainlineKey* a_key) {
     m_mainlineKeys.push_back(a_key);
+}
+
+void Animation::addTaglineKey(TaglineKey* a_key) {
+    m_taglineKeys.push_back(a_key);
 }
 
 void Animation::addTimeline(Timeline* a_timeline) {
@@ -209,6 +220,23 @@ void Animation::loadXML(const tinyxml2::XMLElement* a_element) {
             timeline->loadXML(child);
             addTimeline(timeline);
         }
+        else if(strcmp(child->Name(), "meta") == 0) {
+            const tinyxml2::XMLElement* metaChild = child->FirstChildElement();
+            while (metaChild) {
+                if(strcmp(metaChild->Name(), "tagline") == 0) {
+                    const tinyxml2::XMLElement* taglineChild = metaChild->FirstChildElement();
+                    while (taglineChild) {
+                        if(strcmp(taglineChild->Name(), "key") == 0) {
+                            TaglineKey* key = new TaglineKey(this);
+                            key->loadXML(taglineChild);
+                            addTaglineKey(key);
+                        }
+                        taglineChild = taglineChild->NextSiblingElement();
+                    }
+                }
+                metaChild = metaChild->NextSiblingElement();
+            }
+        }
         child = child->NextSiblingElement();
     }
 }
@@ -216,6 +244,7 @@ void Animation::loadXML(const tinyxml2::XMLElement* a_element) {
 std::ostream& operator<< (std::ostream& out, Animation& animation) {
     cout << "Converting animation " << animation.m_name;
     out << "\t['" << animation.m_name << "'] = {" << endl;
+    out << "\t\t['objects'] = {" << endl;
     
     // count how many object timelines we have
     int objectCnt = 0;
@@ -235,7 +264,23 @@ std::ostream& operator<< (std::ostream& out, Animation& animation) {
             out << endl;
         }
     }
-    out << "\t}";
+    out << "\t\t}";
+    
+    // Add tags to meta section
+    out << "," << endl << "\t\t['meta'] = {" << endl;
+    if(animation.m_taglineKeys.size() > 0) {
+        out << "\t\t\t['tags'] = {" << endl;
+        for(vector<TaglineKey*>::const_iterator it = animation.m_taglineKeys.begin(); it != animation.m_taglineKeys.end(); ++it) {
+            out << *(*it);
+            if(it+1 != animation.m_taglineKeys.end()) {
+                out << ",";
+            }
+            out << endl;
+        }
+        out << "\t\t\t}";
+    }
+    out << endl << "\t\t}";
+    out << endl << "\t}";
     cout << " ... Done.\n";
     return out;
 }

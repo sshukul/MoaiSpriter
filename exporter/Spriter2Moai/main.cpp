@@ -12,6 +12,7 @@
 #include <boost/filesystem.hpp>
 #include "tinyxml2.h"
 #include "SpriterData.h"
+#include "Spriter2MoaiConfig.h"
 
 using namespace std;
 using namespace tinyxml2;
@@ -19,8 +20,13 @@ using namespace boost::filesystem;
 
 int main(int argc, const char * argv[])
 {
-    if ( argc < 1 ) {
+    if ( argc < 2 ) {
         // print usage
+        /*fprintf(stdout,"%s Version %d.%d\n",
+            argv[0],
+            Spriter2Moai_VERSION_MAJOR,
+            Spriter2Moai_VERSION_MINOR); */
+        fprintf(stdout,"Usage: Spriter2Moai <path_to_scml_file>\n");
         return 1;
     }
     

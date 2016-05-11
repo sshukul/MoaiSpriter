@@ -16,7 +16,9 @@
 using namespace std;
 
 class MainlineKey;
+class TaglineKey;
 class Timeline;
+class Tag;
 class Bone;
 class Object;
 class Entity;
@@ -30,12 +32,14 @@ private:
     int m_id;
     unsigned int m_length;
     bool m_looping = true;
+    vector<Timeline*> m_timelines;
+    vector<TaglineKey*> m_taglineKeys;
     
 public:
     string m_name;
-    vector<Timeline*> m_timelines;
     int objectCounter = 0;
     vector<MainlineKey*> m_mainlineKeys;
+    
     Animation(): m_owner(NULL), m_id(-1), m_name(""), m_length(0), m_looping(true) {}
     Animation(Entity* a_owner): m_owner(a_owner), m_id(-1), m_name(""), m_length(0), m_looping(true) {}
     ~Animation();
@@ -56,6 +60,7 @@ public:
     friend std::ostream& operator<< (std::ostream& out, Animation& animation);
     
     void addMainlineKey(MainlineKey* a_key);
+    void addTaglineKey(TaglineKey* a_key);
     void addTimeline(Timeline* a_timeline);
     inline const Timeline* getTimeline(int timeline_id) {return m_timelines[timeline_id];}
     

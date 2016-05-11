@@ -1,24 +1,25 @@
 # MoaiSpriter
 Full Spriter (http://www.brashmonkey.com/spriter.htm) implementation for the Moai SDK game engine (http://www.getmoai.com) .
-Current version - 1.0.0
+Current version - 1.0.1
 
-## Features supported in v1.0.0:
-- Bones based or boneless animation, with any level of nesting and complexity.
-- Sprite position, scale animations and tweens
-- Sprite angle animations and tweens (including > 360 degrees)
-- Sprite image swapping within animation
-- Sprite alpha tweens
-- Custom image or sprite pivot points
+## Features supported in v1.0.1:
+- Bones based or boneless animation, with any level of nesting and complexity. (Since in 1.0.0)
+- Sprite position, scale animations and tweens (Since in 1.0.0)
+- Sprite angle animations and tweens (including > 360 degrees) (Since in 1.0.0)
+- Sprite image swapping within animation (Since in 1.0.0)
+- Sprite alpha tweens (Since in 1.0.0)
+- Custom image or sprite pivot points (Since in 1.0.0)
+- Tags (Added in 1.0.1)
 
 ## Upcoming features (not yet available):
 - Sprite Z-Index changes within animation
 - Variables
-- Tags
 - Event Triggers
 - Timeline linked Sound Effects 
 - Collision Rectangles
 - Action Points
 - Dynamic colour customisation (using shaders)
+- Windows and Linux binaries and Cmake build projects.
 
 ## Components
 This project contains 3 parts. 
@@ -31,8 +32,7 @@ pivot points, rotatation angles > 360 degrees etc. for demonstration of features
 in games, they are for demonstration purposes only. 
 
 3. Demo project and Moai integration Plugin - /plugin_sample - Sample Moai lua project which runs exported scorpion animation. 
-The sample project also has a submodule called moai_spriter_plugin which will need to be cloned in any of your Moai games
-that want to integrate with Spriter.
+The sample project also has a submodule called moai_spriter_plugin (https://github.com/sshukul/moai_spriter_plugin) which will need to be cloned in any of your Moai games that want to integrate with Spriter.
 
 ## Requirements:
 1. Moai SDK installed with MOAI_BIN environment variable set up.
@@ -51,7 +51,7 @@ For 64 bit Macs, binary is supplied, build environment optional.
 2. If you have Moai set up, run the run.sh script (on Mac and Linux) or run.bat (on Windows) to run the sample project and see it working.
 
 3. To use your own Spriter animations, run the Spriter2Moai exporter under /exporter with your scml file as a parameter. 
-Copy the resuling lua file into your moai game project and set up as shown in sample project.
+Copy the resulting lua file into your moai game project and set up as shown in sample project.
 
 4. Pack your sprite parts using TexturePacker, export for Moai, and copy resulting lua and packed asset files to your game project.
 

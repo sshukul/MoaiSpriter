@@ -26,9 +26,11 @@ private:
     vector<Animation*> m_animations;
 
 public:
+    
     Entity(): m_owner(NULL), m_id(-1), m_name("") {}
     Entity(SpriterData* a_owner): m_owner(a_owner), m_id(-1), m_name("") {}
     ~Entity();
+    
     
     inline SpriterData* getOwner() const {return m_owner;}
     inline void setOwner(SpriterData* a_owner) {m_owner = a_owner;}
