@@ -3,12 +3,12 @@ Full Spriter (http://www.brashmonkey.com/spriter.htm) implementation for the Moa
 Current version - 1.0.1
 
 ## Features supported in v1.0.1:
-- Bones based or boneless animation, with any level of nesting and complexity. (Since in 1.0.0)
-- Sprite position, scale animations and tweens (Since in 1.0.0)
-- Sprite angle animations and tweens (including > 360 degrees) (Since in 1.0.0)
-- Sprite image swapping within animation (Since in 1.0.0)
-- Sprite alpha tweens (Since in 1.0.0)
-- Custom image or sprite pivot points (Since in 1.0.0)
+- Bones based or boneless animation, with any level of nesting and complexity. (Since 1.0.0)
+- Sprite position, scale animations and tweens (Since 1.0.0)
+- Sprite angle animations and tweens (including > 360 degrees) (Since 1.0.0)
+- Sprite image swapping within animation (Since 1.0.0)
+- Sprite alpha tweens (Since 1.0.0)
+- Custom image or sprite pivot points (Since 1.0.0)
 - Tags (Added in 1.0.1)
 
 ## Upcoming features (not yet available):
