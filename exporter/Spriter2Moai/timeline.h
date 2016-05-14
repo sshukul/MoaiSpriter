@@ -13,7 +13,6 @@
 #include <vector>
 #include "tinyxml2.h"
 #include "transform.h"
-#include "point.h"
 
 using namespace std;
 
@@ -37,8 +36,6 @@ private:
     
     static float calculateActualRotationAngle(float startAngle, float endAngle, int spin);
     
-    static Point rotatePoint(float cx,float cy,float angle, Point p);
-    
 public:
     Timeline(): m_owner(NULL), m_id(-1), m_name(""), m_objectType("object") {}
     Timeline(Animation* a_owner): m_owner(a_owner), m_id(-1), m_name(""), m_objectType("object") {}
@@ -54,6 +51,7 @@ public:
     inline void setObjectType(string a_objectType) {m_objectType = a_objectType;}
     
     inline bool isTypeObject() const {return (m_objectType.compare("object")==0);}
+    inline bool isTypePoint() const {return (m_objectType.compare("point")==0);}
     
     void loadXML(const tinyxml2::XMLElement* a_element);
     

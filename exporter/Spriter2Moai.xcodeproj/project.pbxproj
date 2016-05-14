@@ -81,7 +81,6 @@
 		8EB32CC11CDDAD7B005DAB27 /* tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tag.h; sourceTree = "<group>"; };
 		8EB32CC31CDDD11F005DAB27 /* taglineKey.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = taglineKey.cpp; sourceTree = "<group>"; };
 		8EB32CC41CDDD11F005DAB27 /* taglineKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = taglineKey.h; sourceTree = "<group>"; };
-		8EE00C9E1CCE43A300E20488 /* point.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = point.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,7 +158,6 @@
 				22F82ADB176FB48E00E92DEE /* bone.h */,
 				229EB48B177575430000FE38 /* transform.cpp */,
 				229EB48C177575440000FE38 /* transform.h */,
-				8EE00C9E1CCE43A300E20488 /* point.h */,
 				8EB32CC31CDDD11F005DAB27 /* taglineKey.cpp */,
 				8EB32CC41CDDD11F005DAB27 /* taglineKey.h */,
 			);

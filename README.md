@@ -1,6 +1,6 @@
 # MoaiSpriter
 Full Spriter (http://www.brashmonkey.com/spriter.htm) implementation for the Moai SDK game engine (http://www.getmoai.com) .
-Current version - 1.0.1
+Current version - 1.0.2
 
 ## Features supported in v1.0.1:
 - Bones based or boneless animation, with any level of nesting and complexity. (Since 1.0.0)
@@ -10,6 +10,7 @@ Current version - 1.0.1
 - Sprite alpha tweens (Since 1.0.0)
 - Custom image or sprite pivot points (Since 1.0.0)
 - Tags (Added in 1.0.1)
+- Action / Spawn Points (Added in 1.0.2)
 
 ## Upcoming features (not yet available):
 - Sprite Z-Index changes within animation
@@ -17,8 +18,7 @@ Current version - 1.0.1
 - Event Triggers
 - Timeline linked Sound Effects 
 - Collision Rectangles
-- Action Points
-- Dynamic colour customisation (using shaders)
+- Sprite runtime colour customisation (using shaders)
 - Windows and Linux binaries and Cmake build projects.
 
 ## Components

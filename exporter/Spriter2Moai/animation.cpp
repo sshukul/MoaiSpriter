@@ -95,7 +95,8 @@ Object* Animation::getObject(unsigned int a_timelineIndex, unsigned int a_keyInd
     if(a_timelineIndex >= m_timelines.size())
         return NULL;
     
-    if(m_timelines[a_timelineIndex]->getObjectType().compare("object") == 0) {
+    if(m_timelines[a_timelineIndex]->getObjectType().compare("object") == 0 ||
+       m_timelines[a_timelineIndex]->getObjectType().compare("point") == 0) {
         return m_timelines[a_timelineIndex]->getObject(a_keyIndex);
     }
     return NULL;
@@ -249,13 +250,13 @@ std::ostream& operator<< (std::ostream& out, Animation& animation) {
     // count how many object timelines we have
     int objectCnt = 0;
     for(vector<Timeline*>::const_iterator it = animation.m_timelines.begin(); it != animation.m_timelines.end(); ++it) {
-        if((*it)->isTypeObject())
+        if((*it)->isTypeObject() || (*it)->isTypePoint())
             objectCnt++;
     }
     
     animation.objectCounter = 0;
     for(vector<Timeline*>::const_iterator it = animation.m_timelines.begin(); it != animation.m_timelines.end(); ++it) {
-        if((*it)->isTypeObject()) {
+        if((*it)->isTypeObject() || (*it)->isTypePoint()) {
             ++animation.objectCounter;
             out << *(*it);
         

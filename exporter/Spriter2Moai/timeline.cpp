@@ -45,7 +45,7 @@ void Timeline::loadXML(const tinyxml2::XMLElement* a_element) {
     const tinyxml2::XMLElement* child = a_element->FirstChildElement();
     while(child) {
         if(strcmp(child->Name(), "key") == 0) {
-            if (m_objectType.compare("object") == 0) {
+            if (m_objectType.compare("object") == 0 || m_objectType.compare("point") == 0) {
                 Object* object = new Object();
                 object->loadXML(child);
                 addObject(object);
@@ -169,7 +169,7 @@ Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int leng
 // Note that we're only interested in exporting objects - not bones
 std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
     
-    if(!timeline.isTypeObject())
+    if(!timeline.isTypeObject() && !timeline.isTypePoint())
         return out;
     
     out << "\t\t\t[" << timeline.m_owner->objectCounter << "] = {" << endl;
@@ -377,6 +377,12 @@ void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline
     out << "\t\t\t\t[" << ++(*keyNum) << "] = {" << endl;
     
     out << "\t\t\t\t\t['angle'] = " << boost::format("%.4f") % resultObj->getAngle() << "," << endl;
+    
+    // Since points don't have a texture, we'll need the name for identifying them
+    if(timeline.isTypePoint()) {
+        out << "\t\t\t\t\t['type'] = 'point'," << endl;
+        out << "\t\t\t\t\t['name'] = '" << timeline.getName() << "'," << endl;
+    }
     out << "\t\t\t\t\t['texture'] = '" << timeline.m_owner->getFileName(resultObj->getFolder(), resultObj->getFile()) << "'," << endl;
     out << "\t\t\t\t\t['zindex'] = " << z << "," << endl;
     out << "\t\t\t\t\t['scale_x'] = " << boost::format("%.4f") % resultObj->getScaleX() << "," << endl;
@@ -391,7 +397,7 @@ void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline
         if(prevObj != NULL && (prevObj->getPivotX() != 0.0 || prevObj->getPivotY() != 0.0)) {
             pivot_x = prevObj->getPivotX();
             pivot_y = prevObj->getPivotY();
-        } else {
+        } else if (resultObj->getFolder() != -1 && resultObj->getFile() != -1) {
             pivot_x = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getPivotX();
             pivot_y = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getPivotY();
         }
@@ -419,32 +425,14 @@ void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline
     out << endl;
 }
 
-Point Timeline::rotatePoint(float cx,float cy,float angle, Point p) {
-    float s = sin(angle);
-    float c = cos(angle);
-    
-    // translate point back to origin:
-    p.x -= cx;
-    p.y -= cy;
-    
-    // rotate point
-    float xnew = p.x * c - p.y * s;
-    float ynew = p.x * s + p.y * c;
-    
-    // translate point back:
-    p.x = xnew + cx;
-    p.y = ynew + cy;
-    return p;
-}
-
 void Timeline::addObject(Object* a_object) {
-    if(!isTypeObject())
+    if(!isTypeObject() && !isTypePoint())
         return;
     m_objects.push_back(a_object);
 }
 
 void Timeline::addBone(Bone* a_bone) {
-    if(isTypeObject())
+    if(isTypeObject() || isTypePoint())
         return;
     m_bones.push_back(a_bone);
 }
@@ -452,7 +440,7 @@ void Timeline::addBone(Bone* a_bone) {
 Object* Timeline::getObject(int a_index) {
     if(a_index >= m_objects.size())
         return NULL;
-    if(!isTypeObject())
+    if(!isTypeObject() && !isTypePoint())
         return NULL;
     return m_objects[a_index];
 }
@@ -460,13 +448,13 @@ Object* Timeline::getObject(int a_index) {
 Bone* Timeline::getBone(int a_index) {
     if(a_index >= m_bones.size())
         return NULL;
-    if(isTypeObject())
+    if(isTypeObject() || isTypePoint())
         return NULL;
     return m_bones[a_index];
 }
 
 Bone* Timeline::getBoneByTime(int time) {
-    if(isTypeObject())
+    if(isTypeObject() || isTypePoint())
         return NULL;
     for(vector<Bone*>::const_iterator it = m_bones.begin(); it != m_bones.end(); it++) {
         if((*it)->getTime() == time) {
@@ -482,7 +470,7 @@ Bone* Timeline::getBoneByTime(int time) {
 }
 
 Bone* Timeline::getNextBoneByTime(int time) {
-    if(isTypeObject())
+    if(isTypeObject() || isTypePoint())
         return NULL;
     for(vector<Bone*>::const_iterator it = m_bones.begin(); it != m_bones.end(); it++) {
         if((*it)->getTime() == time) {
@@ -504,7 +492,7 @@ Bone* Timeline::getNextBoneByTime(int time) {
 }
 
 Object* Timeline::getObjectByTime(int time) {
-    if(!isTypeObject())
+    if(!isTypeObject() && !isTypePoint())
         return NULL;
     for(vector<Object*>::const_iterator it = m_objects.begin(); it != m_objects.end(); it++) {
         if((*it)->getTime() == time) {
@@ -520,7 +508,7 @@ Object* Timeline::getObjectByTime(int time) {
 }
 
 Object* Timeline::getNextObjectByTime(int time) {
-    if(!isTypeObject())
+    if(!isTypeObject() && !isTypePoint())
         return NULL;
     for(vector<Object*>::const_iterator it = m_objects.begin(); it != m_objects.end(); it++) {
         if((*it)->getTime() == time) {

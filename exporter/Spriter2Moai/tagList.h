@@ -32,13 +32,9 @@ public:
     inline void setOwner(SpriterData* a_owner) {m_owner = a_owner;}
     
     void loadXML(const tinyxml2::XMLElement* a_element);
-
-    //friend std::ostream& operator<< (std::ostream& out, const TagList& tagList);
     
     void addTag(Tag* a_tag);
     Tag* getTag(unsigned int a_tagIndex);
 };
-
-//std::ostream& operator<< (std::ostream& out, const TagList& tagList);
 
 #endif

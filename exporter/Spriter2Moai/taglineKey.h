@@ -3,7 +3,6 @@
 //  Spriter2Moai
 //
 //  Created by Saurabh Shukul on 07/05/16.
-//  Copyright © 2016 Samuel Cartwright. All rights reserved.
 //
 
 #ifndef __Spriter2Moai__TaglineKey__
