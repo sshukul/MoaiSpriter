@@ -2,7 +2,7 @@
 Full Spriter (http://www.brashmonkey.com/spriter.htm) implementation for the Moai SDK game engine (http://www.getmoai.com) .
 Current version - 1.0.2
 
-## Features supported in v1.0.1:
+## Features supported in v1.0.2:
 - Bones based or boneless animation, with any level of nesting and complexity. (Since 1.0.0)
 - Sprite position, scale animations and tweens (Since 1.0.0)
 - Sprite angle animations and tweens (including > 360 degrees) (Since 1.0.0)
