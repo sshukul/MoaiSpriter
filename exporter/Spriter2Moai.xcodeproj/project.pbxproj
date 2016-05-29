@@ -27,6 +27,7 @@
 		8EB32CBF1CDDAC16005DAB27 /* tagList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8EB32CBD1CDDAC16005DAB27 /* tagList.cpp */; };
 		8EB32CC21CDDAD7B005DAB27 /* tag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8EB32CC01CDDAD7B005DAB27 /* tag.cpp */; };
 		8EB32CC51CDDD11F005DAB27 /* taglineKey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8EB32CC31CDDD11F005DAB27 /* taglineKey.cpp */; };
+		8EDBA5FB1CE778CE0075EC34 /* soundline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8EDBA5F91CE778CE0075EC34 /* soundline.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -81,6 +82,8 @@
 		8EB32CC11CDDAD7B005DAB27 /* tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tag.h; sourceTree = "<group>"; };
 		8EB32CC31CDDD11F005DAB27 /* taglineKey.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = taglineKey.cpp; sourceTree = "<group>"; };
 		8EB32CC41CDDD11F005DAB27 /* taglineKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = taglineKey.h; sourceTree = "<group>"; };
+		8EDBA5F91CE778CE0075EC34 /* soundline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = soundline.cpp; sourceTree = "<group>"; };
+		8EDBA5FA1CE778CE0075EC34 /* soundline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = soundline.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +151,8 @@
 				22F82ACB176FA7EC00E92DEE /* mainlineKey.h */,
 				22F82ACD176FA7F700E92DEE /* timeline.cpp */,
 				22F82ACE176FA7F700E92DEE /* timeline.h */,
+				8EDBA5F91CE778CE0075EC34 /* soundline.cpp */,
+				8EDBA5FA1CE778CE0075EC34 /* soundline.h */,
 				22F82AD1176FB46F00E92DEE /* objectRef.cpp */,
 				22F82AD2176FB46F00E92DEE /* objectRef.h */,
 				22F82AD4176FB47B00E92DEE /* object.cpp */,
@@ -222,6 +227,7 @@
 				8EB32CC21CDDAD7B005DAB27 /* tag.cpp in Sources */,
 				22F82AC2176F143700E92DEE /* animation.cpp in Sources */,
 				22F82AC5176F25C300E92DEE /* spriterData.cpp in Sources */,
+				8EDBA5FB1CE778CE0075EC34 /* soundline.cpp in Sources */,
 				22F82AC7176F2CD700E92DEE /* folder.cpp in Sources */,
 				8EB32CC51CDDD11F005DAB27 /* taglineKey.cpp in Sources */,
 				22F82AC9176F2FAC00E92DEE /* file.cpp in Sources */,

@@ -13,6 +13,7 @@
 #include "taglineKey.h"
 #include "tag.h"
 #include "timeline.h"
+#include "soundline.h"
 #include "entity.h"
 #include "spriterData.h"
 #include "file.h"
@@ -50,6 +51,10 @@ void Animation::addTaglineKey(TaglineKey* a_key) {
 
 void Animation::addTimeline(Timeline* a_timeline) {
     m_timelines.push_back(a_timeline);
+}
+
+void Animation::addSoundline(Soundline* a_soundline) {
+    m_soundlines.push_back(a_soundline);
 }
 
 Bone* Animation::getBone(unsigned int a_timelineIndex, unsigned int a_keyIndex) {
@@ -221,6 +226,11 @@ void Animation::loadXML(const tinyxml2::XMLElement* a_element) {
             timeline->loadXML(child);
             addTimeline(timeline);
         }
+        else if(strcmp(child->Name(), "soundline") == 0) {
+            Soundline* soundline = new Soundline(this);
+            soundline->loadXML(child);
+            addSoundline(soundline);
+        }
         else if(strcmp(child->Name(), "meta") == 0) {
             const tinyxml2::XMLElement* metaChild = child->FirstChildElement();
             while (metaChild) {
@@ -267,9 +277,21 @@ std::ostream& operator<< (std::ostream& out, Animation& animation) {
     }
     out << "\t\t}";
     
+    // Add sounds if any
+    if(animation.m_soundlines.size() > 0) {
+        out << "," << endl << "\t\t['sounds'] = {" << endl;
+        for(vector<Soundline*>::const_iterator it = animation.m_soundlines.begin(); it != animation.m_soundlines.end(); ++it) {
+            out << *(*it);
+            if(it+1 != animation.m_soundlines.end()) {
+                out << ",";
+            }
+        }
+        out << endl << "\t\t}";
+    }
+    
     // Add tags to meta section
-    out << "," << endl << "\t\t['meta'] = {" << endl;
     if(animation.m_taglineKeys.size() > 0) {
+        out << "," << endl << "\t\t['meta'] = {" << endl;
         out << "\t\t\t['tags'] = {" << endl;
         for(vector<TaglineKey*>::const_iterator it = animation.m_taglineKeys.begin(); it != animation.m_taglineKeys.end(); ++it) {
             out << *(*it);
@@ -279,8 +301,9 @@ std::ostream& operator<< (std::ostream& out, Animation& animation) {
             out << endl;
         }
         out << "\t\t\t}";
+        out << endl << "\t\t}";
     }
-    out << endl << "\t\t}";
+
     out << endl << "\t}";
     cout << " ... Done.\n";
     return out;

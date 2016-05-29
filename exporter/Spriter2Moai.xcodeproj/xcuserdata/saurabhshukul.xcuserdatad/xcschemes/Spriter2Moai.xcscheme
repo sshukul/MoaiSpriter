@@ -64,11 +64,11 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "/Users/saurabhshukul/Documents/Alt-ws/spriter2moai/pirate_boss/pirate_boss.scml"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/saurabhshukul/Documents/Alt-ws/spriter2moai/main_char/main_char.scml"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/saurabhshukul/Documents/Alt-ws/spriter2moai/scorpion/scorpion.scml"

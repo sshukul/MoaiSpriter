@@ -10,6 +10,7 @@
 #include <boost/format.hpp>
 #include <math.h>
 #include "timeline.h"
+#include "soundline.h"
 #include "mainlineKey.h"
 #include "object.h"
 #include "bone.h"
@@ -179,39 +180,71 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
     Object* prevObj = NULL;
     bool loopbackFrameAlreadyWritten = false;
     bool objectHasNonMainlineFrame = false;
+    bool objectHasSoundlineFrame = false;
     int prevObjTime = 0;
     vector<Object*>::const_iterator itObj = timeline.m_objects.begin();
-    for(vector<MainlineKey*>::const_iterator itMain = timeline.m_owner->m_mainlineKeys.begin(); itMain != timeline.m_owner->m_mainlineKeys.end() || itObj != timeline.m_objects.end(); ) {
+    vector<Soundline*>::const_iterator itSoundlines = timeline.m_owner->m_soundlines.begin();
+    vector<Object*>::const_iterator itSounds;
+    
+    // We iterate through the soundline if any and add it's points as keyframes too,
+    // to allow attaching a listener on keyframes in Moai and playing the required sounds
+    Soundline* soundline = NULL;
+    if(itSoundlines != timeline.m_owner->m_soundlines.end()) {
+        soundline = *itSoundlines;
+        itSounds = soundline->m_objects.begin();
+    }
+    
+    for(vector<MainlineKey*>::const_iterator itMain = timeline.m_owner->m_mainlineKeys.begin(); itMain != timeline.m_owner->m_mainlineKeys.end() || itObj != timeline.m_objects.end() || (soundline != NULL && itSounds != soundline->m_objects.end()); ) {
         unsigned int frameTime = 0;
         
         MainlineKey* mKey = *itMain;
         Object* object = *itObj;
+        Object* sound = NULL;
+        
+        if(soundline != NULL && itSounds != soundline->m_objects.end()) {
+            sound = *itSounds;
+        }
         
         int mainlineKeyTime = 0;
         int objectTime = 0;
-        bool mKeyHasEnded = false;
-        bool objectListHasEnded = false;
+        int soundlineTime = 0;
         bool skipFrame = false;
         if(mKey == NULL || itMain == timeline.m_owner->m_mainlineKeys.end()) {
             mainlineKeyTime = timeline.m_owner->getLength();
             mKey = *(itMain - 1);
-            mKeyHasEnded = true;
         } else {
             mainlineKeyTime = mKey->getTime();
         }
         
         if(object == NULL || itObj == timeline.m_objects.end()) {
             objectTime = timeline.m_owner->getLength();
-            objectListHasEnded = true;
         } else {
             objectTime = object->getTime();
         }
         
+        if(sound == NULL || soundline == NULL || itSounds == soundline->m_objects.end()) {
+            soundlineTime = timeline.m_owner->getLength();
+        } else {
+            soundlineTime = sound->getTime();
+        }
+        
         if(objectTime < mainlineKeyTime) {
-            frameTime = objectTime;
+            if(soundlineTime < objectTime) {
+                frameTime = soundlineTime;
+                objectHasSoundlineFrame = true;
+            } else {
+                frameTime = objectTime;
+            }
             objectHasNonMainlineFrame = true;
+        } else if(soundlineTime < mainlineKeyTime) {
+            frameTime = soundlineTime;
+            objectHasSoundlineFrame = true;
         } else {
             frameTime = mainlineKeyTime;
+        }
+        
+        if(frameTime != soundlineTime) {
+            sound = NULL;
         }
 
         int mainlineKeyId = mKey->getId();
@@ -225,7 +258,6 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         }
 
         if(objectTime < prevObjTime ) {
-            //objectTime = timeline.m_owner->getLength();
             skipFrame = true;
         }
         // For each object we have to check if it is attached to a bone. If it is, then
@@ -254,6 +286,17 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                     float averagingFactor = ((float)frameTime - (float)object->getTime()) / (nextFrameTime - (float)object->getTime());
                     Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin());
                     objectTransform.lerp(nextKeyTransform, averagingFactor, object->getSpin());
+                }
+            } else if(objectHasSoundlineFrame && frameTime != object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != frameTime) {
+                float nextFrameTime = objectNextKey->getTime();
+                if(!(timeline.m_owner->getLooping() == false && nextFrameTime == 0)) {
+                    if(nextFrameTime == 0) {
+                        nextFrameTime = timeline.m_owner->getLength();
+                    }
+                    float averagingFactor = ((float)frameTime - (float)prevObjTime) / (nextFrameTime - (float)prevObjTime);
+                    objectTransform = *new Transform(prevObj->getX(), prevObj->getY(), prevObj->getAngle(), prevObj->getScaleX(), prevObj->getScaleY(), prevObj->getSpin());
+                    Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin());
+                    objectTransform.lerp(nextKeyTransform, averagingFactor, prevObj->getSpin());
                 }
             }
             
@@ -331,8 +374,13 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                 firstZIndex = objectRef->getZIndex();
             }
             
-            if(prevObj == NULL || !resultObj->equals(*prevObj)) {
-                Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevObj);
+            bool hasNext = false;
+            if(((*itObj) != NULL && itObj != timeline.m_objects.end()) || ((*itMain) != NULL && itMain != timeline.m_owner->m_mainlineKeys.end()) || (soundline != NULL && (*itSounds) != NULL && itSounds != soundline->m_objects.end())) {
+                hasNext = true;
+            }
+
+            if(prevObj == NULL || !resultObj->equals(*prevObj) || objectHasSoundlineFrame) {
+                Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevObj, hasNext);
             }
             
             if(frameTime == timeline.m_owner->getLength()) {
@@ -342,23 +390,19 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             prevObj = resultObj;
         }
         
-        // This bit adds a "loopback" keyframe which is the same as the first frame,
-        // if the last frame isn't specified as a keyframe. This makes it tween and loop smoothly like
-        // in the Spriter GUI rather than "jerk" back to the first frame after the final frame.
-        if(!loopbackFrameAlreadyWritten && (((itMain + 1 == timeline.m_owner->m_mainlineKeys.end()) && objectListHasEnded) || ((itObj + 1 == timeline.m_objects.end()) && mKeyHasEnded)) && timeline.m_owner->getLooping() != false) {
-            if(prevObj == NULL || !firstResultObj->equals(*prevObj)) {
-              Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex, prevObj);
-            }
-        }
-        
         if(objectHasNonMainlineFrame) {
             objectHasNonMainlineFrame = false;
         }
+        if(objectHasSoundlineFrame) {
+            objectHasSoundlineFrame = false;
+        }
         
-        if(objectTime < mainlineKeyTime) {
+        if(objectTime < mainlineKeyTime && objectTime < soundlineTime) {
             itObj++;
-        } else if(mainlineKeyTime < objectTime) {
+        } else if(mainlineKeyTime < objectTime && mainlineKeyTime < soundlineTime) {
             itMain++;
+        } else if(soundlineTime < objectTime && soundlineTime < mainlineKeyTime) {
+            itSounds++;
         } else {
             if((*itObj) != NULL && itObj != timeline.m_objects.end()) {
                 itObj++;
@@ -366,23 +410,35 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             if((*itMain) != NULL && itMain != timeline.m_owner->m_mainlineKeys.end()) {
                 itMain++;
             }
+            if(soundline != NULL && (*itSounds) != NULL && itSounds != soundline->m_objects.end()) {
+                itMain++;
+            }
         }
+        
+        // This bit adds a "loopback" keyframe which is the same as the first frame,
+        // if the last frame isn't specified as a keyframe and looping is enabled.
+        // This makes it tween and loop smoothly like in the Spriter GUI rather than "jerk" back to the first frame after the final frame.
+        if(!loopbackFrameAlreadyWritten  && timeline.m_owner->getLooping() != false && itMain == timeline.m_owner->m_mainlineKeys.end() && itObj == timeline.m_objects.end() && (soundline == NULL || ((*itSounds) != NULL && itSounds == soundline->m_objects.end()))) {
+            if(prevObj == NULL || !firstResultObj->equals(*prevObj)) {
+                Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex, prevObj, false);
+            }
+        }
+        
         prevObjTime = objectTime;
     }
     out << "\t\t\t}";
     return out;
 }
 
-void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z, Object* prevObj) {
+void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z, Object* prevObj, bool hasNext) {
     out << "\t\t\t\t[" << ++(*keyNum) << "] = {" << endl;
     
     out << "\t\t\t\t\t['angle'] = " << boost::format("%.4f") % resultObj->getAngle() << "," << endl;
     
-    // Since points don't have a texture, we'll need the name for identifying them
     if(timeline.isTypePoint()) {
         out << "\t\t\t\t\t['type'] = 'point'," << endl;
-        out << "\t\t\t\t\t['name'] = '" << timeline.getName() << "'," << endl;
     }
+    out << "\t\t\t\t\t['name'] = '" << timeline.getName() << "'," << endl;
     out << "\t\t\t\t\t['texture'] = '" << timeline.m_owner->getFileName(resultObj->getFolder(), resultObj->getFile()) << "'," << endl;
     out << "\t\t\t\t\t['zindex'] = " << z << "," << endl;
     out << "\t\t\t\t\t['scale_x'] = " << boost::format("%.4f") % resultObj->getScaleX() << "," << endl;
@@ -419,9 +475,9 @@ void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline
     
     out << "\t\t\t\t}";
     
-    //if(time != timeline.m_owner->getLength()) {
+    if(hasNext) {
         out << ", ";
-    //}
+    }
     out << endl;
 }
 

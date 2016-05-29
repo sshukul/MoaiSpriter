@@ -1,6 +1,6 @@
 # MoaiSpriter
 Full Spriter (http://www.brashmonkey.com/spriter.htm) implementation for the Moai SDK game engine (http://www.getmoai.com) .
-Current version - 1.0.2
+Current version - 1.0.3
 
 ## Features supported in v1.0.2:
 - Bones based or boneless animation, with any level of nesting and complexity. (Since 1.0.0)
@@ -11,12 +11,12 @@ Current version - 1.0.2
 - Custom image or sprite pivot points (Since 1.0.0)
 - Tags (Added in 1.0.1)
 - Action / Spawn Points (Added in 1.0.2)
+- Sprite Z-Index changes within animation (Added in 1.0.3)
+- Timeline linked Sound Effects (Added in 1.0.3)
 
 ## Upcoming features (not yet available):
-- Sprite Z-Index changes within animation
 - Variables
 - Event Triggers
-- Timeline linked Sound Effects 
 - Collision Rectangles
 - Sprite runtime colour customisation (using shaders)
 - Windows and Linux binaries and Cmake build projects.
@@ -57,6 +57,10 @@ Copy the resulting lua file into your moai game project and set up as shown in s
 
 5. Clone the submodule moai_spriter_plugin project (https://github.com/sshukul/moai_spriter_plugin) directly into your Moai 
 game and integrate as shown in sample project. Keep as submodule and update from repo when newer features are released.
+
+## Troubleshooting
+1. Sprite sounds or z-index changes within animation aren't working - If you are adding a listener for EVENT_TIMER_KEYFRAME on an  animation, don't forget to add a call to player.keyFrameFunc() at the end if you want sounds and z-index hanges to work. This is 
+because the plugin also makes use of keyframe listeners to activate sounds and z-index changes.
 
 ## Credits:
 Thanks to github users miletbaker (https://github.com/miletbaker/spriter2moai)
