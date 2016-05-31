@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485825949.889902"
+            timestampString = "486258113.594062"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "221"
-            endingLineNumber = "221"
+            startingLineNumber = "222"
+            endingLineNumber = "222"
             landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
             landmarkType = "7">
          </BreakpointContent>
@@ -58,7 +58,23 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485910731.256643"
+            timestampString = "486258113.594062"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "267"
+            endingLineNumber = "267"
+            landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Spriter2Moai/timeline.cpp"
+            timestampString = "486258113.594062"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "266"
@@ -74,39 +90,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485910731.256643"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "265"
-            endingLineNumber = "265"
-            landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485651061.965548"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "185"
-            endingLineNumber = "185"
-            landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485651061.965548"
+            timestampString = "486258113.594062"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "186"
@@ -121,6 +105,22 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
+            filePath = "Spriter2Moai/timeline.cpp"
+            timestampString = "486258113.594062"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "187"
+            endingLineNumber = "187"
+            landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/animation.cpp"
             timestampString = "485001640.578161"
             startingColumnNumber = "9223372036854775807"
@@ -154,11 +154,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485825949.889902"
+            timestampString = "486258113.594062"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "188"
-            endingLineNumber = "188"
+            startingLineNumber = "189"
+            endingLineNumber = "189"
             landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
             landmarkType = "7">
          </BreakpointContent>
@@ -170,11 +170,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485910731.256643"
+            timestampString = "486258113.594062"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "238"
-            endingLineNumber = "238"
+            startingLineNumber = "239"
+            endingLineNumber = "239"
             landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
             landmarkType = "7">
          </BreakpointContent>
@@ -186,27 +186,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485910731.256643"
+            timestampString = "486258113.594062"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "258"
+            endingLineNumber = "258"
+            landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Spriter2Moai/timeline.cpp"
+            timestampString = "486258113.594062"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "257"
             endingLineNumber = "257"
-            landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485910731.256643"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "256"
-            endingLineNumber = "256"
             landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
             landmarkType = "7">
          </BreakpointContent>
@@ -234,11 +234,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485910731.256643"
+            timestampString = "486258113.594062"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "374"
-            endingLineNumber = "374"
+            startingLineNumber = "375"
+            endingLineNumber = "375"
             landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
             landmarkType = "7">
          </BreakpointContent>
@@ -250,11 +250,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485910731.256643"
+            timestampString = "486258113.594062"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "252"
-            endingLineNumber = "252"
+            startingLineNumber = "253"
+            endingLineNumber = "253"
             landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
             landmarkType = "7">
          </BreakpointContent>
@@ -266,11 +266,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "486000939.537985"
+            timestampString = "486346233.963255"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "455"
-            endingLineNumber = "455"
+            startingLineNumber = "462"
+            endingLineNumber = "462"
             landmarkName = "Timeline::writeObject(int time, Object* resultObj, const Timeline&amp; timeline, std::ostream&amp; out, int* keyNum, int z, Object* prevObj, bool hasNext)"
             landmarkType = "5">
          </BreakpointContent>
@@ -600,23 +600,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485825949.889902"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "197"
-            endingLineNumber = "197"
-            landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485825949.889902"
+            timestampString = "486258113.594062"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "198"
@@ -632,11 +616,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485910731.256643"
+            timestampString = "486258113.594062"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "273"
-            endingLineNumber = "273"
+            startingLineNumber = "199"
+            endingLineNumber = "199"
+            landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Spriter2Moai/timeline.cpp"
+            timestampString = "486258113.594062"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "274"
+            endingLineNumber = "274"
             landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
             landmarkType = "7">
          </BreakpointContent>
@@ -664,11 +664,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485910731.256643"
+            timestampString = "486258113.594062"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "281"
-            endingLineNumber = "281"
+            startingLineNumber = "282"
+            endingLineNumber = "282"
             landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
             landmarkType = "7">
          </BreakpointContent>
@@ -680,11 +680,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485876340.123064"
+            timestampString = "486258113.594062"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "199"
-            endingLineNumber = "199"
+            startingLineNumber = "200"
+            endingLineNumber = "200"
             landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
             landmarkType = "7">
          </BreakpointContent>
@@ -696,27 +696,43 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485910731.256643"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "290"
-            endingLineNumber = "290"
-            landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "485910731.256643"
+            timestampString = "486258113.594062"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "291"
             endingLineNumber = "291"
+            landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Spriter2Moai/timeline.cpp"
+            timestampString = "486258113.594062"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "292"
+            endingLineNumber = "292"
+            landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Spriter2Moai/timeline.cpp"
+            timestampString = "486258113.594062"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
             landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
             landmarkType = "7">
          </BreakpointContent>

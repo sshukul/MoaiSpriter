@@ -182,6 +182,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
     bool objectHasNonMainlineFrame = false;
     bool objectHasSoundlineFrame = false;
     int prevObjTime = 0;
+    int prevFrameTime = 0;
     vector<Object*>::const_iterator itObj = timeline.m_objects.begin();
     vector<Soundline*>::const_iterator itSoundlines = timeline.m_owner->m_soundlines.begin();
     vector<Object*>::const_iterator itSounds;
@@ -287,13 +288,13 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                     Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin());
                     objectTransform.lerp(nextKeyTransform, averagingFactor, object->getSpin());
                 }
-            } else if(objectHasSoundlineFrame && frameTime != object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != frameTime) {
+            } else if((objectHasSoundlineFrame || frameTime < object->getTime()) && frameTime != object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != frameTime) {
                 float nextFrameTime = objectNextKey->getTime();
                 if(!(timeline.m_owner->getLooping() == false && nextFrameTime == 0)) {
                     if(nextFrameTime == 0) {
                         nextFrameTime = timeline.m_owner->getLength();
                     }
-                    float averagingFactor = ((float)frameTime - (float)prevObjTime) / (nextFrameTime - (float)prevObjTime);
+                    float averagingFactor = ((float)frameTime - (float)prevFrameTime) / (nextFrameTime - (float)prevFrameTime);
                     objectTransform = *new Transform(prevObj->getX(), prevObj->getY(), prevObj->getAngle(), prevObj->getScaleX(), prevObj->getScaleY(), prevObj->getSpin());
                     Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin());
                     objectTransform.lerp(nextKeyTransform, averagingFactor, prevObj->getSpin());
@@ -381,13 +382,18 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
 
             if(prevObj == NULL || !resultObj->equals(*prevObj) || objectHasSoundlineFrame) {
                 Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevObj, hasNext);
+                if(frameTime == timeline.m_owner->getLength()) {
+                    loopbackFrameAlreadyWritten = true;
+                }
+            }            
+            if(mainlineKeyTime < objectTime || soundlineTime < objectTime) {
+                if(prevObj != NULL) {
+                    resultObj->setPivotX(prevObj->getPivotX());
+                    resultObj->setPivotY(prevObj->getPivotY());
+                }
             }
-            
-            if(frameTime == timeline.m_owner->getLength()) {
-                loopbackFrameAlreadyWritten = true;
-            }
-
             prevObj = resultObj;
+            
         }
         
         if(objectHasNonMainlineFrame) {
@@ -418,13 +424,14 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         // This bit adds a "loopback" keyframe which is the same as the first frame,
         // if the last frame isn't specified as a keyframe and looping is enabled.
         // This makes it tween and loop smoothly like in the Spriter GUI rather than "jerk" back to the first frame after the final frame.
-        if(!loopbackFrameAlreadyWritten  && timeline.m_owner->getLooping() != false && itMain == timeline.m_owner->m_mainlineKeys.end() && itObj == timeline.m_objects.end() && (soundline == NULL || ((*itSounds) != NULL && itSounds == soundline->m_objects.end()))) {
-            if(prevObj == NULL || !firstResultObj->equals(*prevObj)) {
+        if(!loopbackFrameAlreadyWritten && timeline.m_owner->getLooping() != false && itMain == timeline.m_owner->m_mainlineKeys.end() && itObj == timeline.m_objects.end() && (soundline == NULL || ((*itSounds) != NULL && itSounds == soundline->m_objects.end()))) {
+            //if(prevObj == NULL || !firstResultObj->equals(*prevObj)) {
                 Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex, prevObj, false);
-            }
+            //}
         }
         
         prevObjTime = objectTime;
+        prevFrameTime = frameTime;
     }
     out << "\t\t\t}";
     return out;

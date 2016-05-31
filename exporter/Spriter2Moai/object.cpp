@@ -90,9 +90,9 @@ bool Object::equals(const Object& o) {
         return false;
     } else if (o.getFolder() != this->getFolder()) {
         return false;
-    } else if (o.getSpin() != this->getSpin()) {
+    } /*else if (o.getSpin() != this->getSpin()) {
         return false;
-    } else {
+    } */else {
         return true;
     }
 }
