@@ -29,11 +29,11 @@ static void rotate_point(float& x, float& y, float angle, float origin_x, float 
 
 
 Transform::Transform()
-: x(0.0f), y(0.0f), angle(0.0f), scale_x(1.0f), scale_y(1.0f)
+: x(0.0f), y(0.0f), angle(0.0f), scale_x(1.0f), scale_y(1.0f), alpha(1.0f)
 {}
 
-Transform::Transform(float x, float y, float angle, float scale_x, float scale_y, int spin)
-: x(x), y(y), angle(angle), scale_x(scale_x), scale_y(scale_y), spin(spin)
+Transform::Transform(float x, float y, float angle, float scale_x, float scale_y, int spin, float alpha)
+: x(x), y(y), angle(angle), scale_x(scale_x), scale_y(scale_y), spin(spin), alpha(alpha)
 {}
 
 bool Transform::operator==(const Transform& t) const
@@ -50,6 +50,7 @@ void Transform::lerp(const Transform& transform, float t, int spin)
 {
     x = lerp(x, transform.x, t);
     y = lerp(y, transform.y, t);
+    alpha = lerp(alpha, transform.alpha, t);
     
     // 'spin' is based on what you are coming from (key1)
     if(spin != 0)

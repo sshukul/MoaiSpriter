@@ -234,11 +234,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "486258113.594062"
+            timestampString = "486861855.08525"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "375"
-            endingLineNumber = "375"
+            startingLineNumber = "376"
+            endingLineNumber = "376"
             landmarkName = "operator&lt;&lt; (std::ostream&amp; out, const Timeline&amp; timeline)"
             landmarkType = "7">
          </BreakpointContent>
@@ -266,11 +266,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Spriter2Moai/timeline.cpp"
-            timestampString = "486346233.963255"
+            timestampString = "486861855.08525"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "462"
-            endingLineNumber = "462"
+            startingLineNumber = "466"
+            endingLineNumber = "466"
             landmarkName = "Timeline::writeObject(int time, Object* resultObj, const Timeline&amp; timeline, std::ostream&amp; out, int* keyNum, int z, Object* prevObj, bool hasNext)"
             landmarkType = "5">
          </BreakpointContent>

@@ -72,6 +72,11 @@ void Object::loadXML(const tinyxml2::XMLElement* a_element) {
         if(attb) {
             m_pivot_y = attb->FloatValue();
         }
+        
+        attb = child->FindAttribute("a");
+        if(attb) {
+            m_alpha = attb->FloatValue();
+        }
     }
 }
 
@@ -89,6 +94,8 @@ bool Object::equals(const Object& o) {
     } else if (o.getFile() != this->getFile()) {
         return false;
     } else if (o.getFolder() != this->getFolder()) {
+        return false;
+    } else if (o.getAlpha() != this->getAlpha()) {
         return false;
     } /*else if (o.getSpin() != this->getSpin()) {
         return false;
@@ -111,5 +118,6 @@ Object* Object::clone() {
     object->setAngle(this->getAngle());
     object->setPivotX(this->getPivotX());
     object->setPivotY(this->getPivotY());
+    object->setAlpha(this->getAlpha());
     return object;
 }

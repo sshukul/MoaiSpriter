@@ -16,11 +16,12 @@ public:
     float x, y;
     float angle;
     float scale_x, scale_y;
+    float alpha;
     int spin;
     float rotationAngle = 0;
     
     Transform();
-    Transform(float x, float y, float angle, float scale_x, float scale_y, int spin);
+    Transform(float x, float y, float angle, float scale_x, float scale_y, int spin, float alpha);
     
     bool operator==(const Transform& t) const;
     bool operator!=(const Transform& t) const;
