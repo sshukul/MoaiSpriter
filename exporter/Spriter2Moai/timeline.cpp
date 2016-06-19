@@ -278,6 +278,29 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             
             Object* objectNextKey = timeline.m_owner->getNextObjectByTime(objectRef->getTimeline(), frameTime);
             
+//            if(frameTime != object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != object->getTime()) {
+//                float nextFrameTime = objectNextKey->getTime();
+//                if(!(timeline.m_owner->getLooping() == false && nextFrameTime == 0)) {
+//                    if(nextFrameTime == 0) {
+//                        nextFrameTime = timeline.m_owner->getLength();
+//                    }
+//                    float averagingFactor = ((float)frameTime - (float)object->getTime()) / (nextFrameTime - (float)object->getTime());
+//                    Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin(), objectNextKey->getAlpha());
+//                    objectTransform.lerp(nextKeyTransform, averagingFactor, object->getSpin());
+//                }
+//            } else if((objectHasSoundlineFrame || frameTime < object->getTime()) && frameTime != object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != frameTime) {
+//                float nextFrameTime = objectNextKey->getTime();
+//                if(!(timeline.m_owner->getLooping() == false && nextFrameTime == 0)) {
+//                    if(nextFrameTime == 0) {
+//                        nextFrameTime = timeline.m_owner->getLength();
+//                    }
+//                    float averagingFactor = ((float)frameTime - (float)prevFrameTime) / (nextFrameTime - (float)prevFrameTime);
+//                    objectTransform = *new Transform(prevObj->getX(), prevObj->getY(), prevObj->getAngle(), prevObj->getScaleX(), prevObj->getScaleY(), prevObj->getSpin(), prevObj->getAlpha());
+//                    Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin(), objectNextKey->getAlpha());
+//                    objectTransform.lerp(nextKeyTransform, averagingFactor, prevObj->getSpin());
+//                }
+//            }
+            
             if(frameTime != object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != object->getTime()) {
                 float nextFrameTime = objectNextKey->getTime();
                 if(!(timeline.m_owner->getLooping() == false && nextFrameTime == 0)) {
@@ -288,13 +311,13 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                     Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin(), objectNextKey->getAlpha());
                     objectTransform.lerp(nextKeyTransform, averagingFactor, object->getSpin());
                 }
-            } else if((objectHasSoundlineFrame || frameTime < object->getTime()) && frameTime != object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != frameTime) {
+            } else if(objectHasSoundlineFrame && frameTime != object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != frameTime) {
                 float nextFrameTime = objectNextKey->getTime();
                 if(!(timeline.m_owner->getLooping() == false && nextFrameTime == 0)) {
                     if(nextFrameTime == 0) {
                         nextFrameTime = timeline.m_owner->getLength();
                     }
-                    float averagingFactor = ((float)frameTime - (float)prevFrameTime) / (nextFrameTime - (float)prevFrameTime);
+                    float averagingFactor = ((float)frameTime - (float)prevObjTime) / (nextFrameTime - (float)prevObjTime);
                     objectTransform = *new Transform(prevObj->getX(), prevObj->getY(), prevObj->getAngle(), prevObj->getScaleX(), prevObj->getScaleY(), prevObj->getSpin(), prevObj->getAlpha());
                     Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin(), objectNextKey->getAlpha());
                     objectTransform.lerp(nextKeyTransform, averagingFactor, prevObj->getSpin());

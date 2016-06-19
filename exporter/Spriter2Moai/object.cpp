@@ -97,9 +97,9 @@ bool Object::equals(const Object& o) {
         return false;
     } else if (o.getAlpha() != this->getAlpha()) {
         return false;
-    } /*else if (o.getSpin() != this->getSpin()) {
+    } else if (o.getSpin() != this->getSpin()) {
         return false;
-    } */else {
+    } else {
         return true;
     }
 }
