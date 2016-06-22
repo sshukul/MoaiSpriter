@@ -276,30 +276,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             Transform objectTransform(object->getX(), object->getY(), object->getAngle(), object->getScaleX(), object->getScaleY(), object->getSpin(), object->getAlpha());
             Transform objectNextKeyTransform(object->getX(), object->getY(), object->getAngle(), object->getScaleX(), object->getScaleY(), object->getSpin(), object->getAlpha());
             
-            Object* objectNextKey = timeline.m_owner->getNextObjectByTime(objectRef->getTimeline(), frameTime);
-            
-//            if(frameTime != object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != object->getTime()) {
-//                float nextFrameTime = objectNextKey->getTime();
-//                if(!(timeline.m_owner->getLooping() == false && nextFrameTime == 0)) {
-//                    if(nextFrameTime == 0) {
-//                        nextFrameTime = timeline.m_owner->getLength();
-//                    }
-//                    float averagingFactor = ((float)frameTime - (float)object->getTime()) / (nextFrameTime - (float)object->getTime());
-//                    Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin(), objectNextKey->getAlpha());
-//                    objectTransform.lerp(nextKeyTransform, averagingFactor, object->getSpin());
-//                }
-//            } else if((objectHasSoundlineFrame || frameTime < object->getTime()) && frameTime != object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != frameTime) {
-//                float nextFrameTime = objectNextKey->getTime();
-//                if(!(timeline.m_owner->getLooping() == false && nextFrameTime == 0)) {
-//                    if(nextFrameTime == 0) {
-//                        nextFrameTime = timeline.m_owner->getLength();
-//                    }
-//                    float averagingFactor = ((float)frameTime - (float)prevFrameTime) / (nextFrameTime - (float)prevFrameTime);
-//                    objectTransform = *new Transform(prevObj->getX(), prevObj->getY(), prevObj->getAngle(), prevObj->getScaleX(), prevObj->getScaleY(), prevObj->getSpin(), prevObj->getAlpha());
-//                    Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin(), objectNextKey->getAlpha());
-//                    objectTransform.lerp(nextKeyTransform, averagingFactor, prevObj->getSpin());
-//                }
-//            }
+            Object* objectNextKey = timeline.m_owner->getNextObjectByTime(objectRef->getTimeline(), frameTime);        
             
             if(frameTime != object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != object->getTime()) {
                 float nextFrameTime = objectNextKey->getTime();
@@ -317,7 +294,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                     if(nextFrameTime == 0) {
                         nextFrameTime = timeline.m_owner->getLength();
                     }
-                    float averagingFactor = ((float)frameTime - (float)prevObjTime) / (nextFrameTime - (float)prevObjTime);
+                    float averagingFactor = ((float)frameTime - (float)prevFrameTime) / (nextFrameTime - (float)prevFrameTime);
                     objectTransform = *new Transform(prevObj->getX(), prevObj->getY(), prevObj->getAngle(), prevObj->getScaleX(), prevObj->getScaleY(), prevObj->getSpin(), prevObj->getAlpha());
                     Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin(), objectNextKey->getAlpha());
                     objectTransform.lerp(nextKeyTransform, averagingFactor, prevObj->getSpin());
