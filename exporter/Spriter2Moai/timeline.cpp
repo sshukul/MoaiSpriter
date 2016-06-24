@@ -178,6 +178,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
     Object* firstResultObj = NULL;
     int firstZIndex = 0;
     Object* prevObj = NULL;
+    Object* prevResultObj = NULL;
     bool loopbackFrameAlreadyWritten = false;
     bool objectHasNonMainlineFrame = false;
     bool objectHasSoundlineFrame = false;
@@ -200,6 +201,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         
         MainlineKey* mKey = *itMain;
         Object* object = *itObj;
+        Object* nextObject = *itObj+1;
         Object* sound = NULL;
         
         if(soundline != NULL && itSounds != soundline->m_objects.end()) {
@@ -276,7 +278,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             Transform objectTransform(object->getX(), object->getY(), object->getAngle(), object->getScaleX(), object->getScaleY(), object->getSpin(), object->getAlpha());
             Transform objectNextKeyTransform(object->getX(), object->getY(), object->getAngle(), object->getScaleX(), object->getScaleY(), object->getSpin(), object->getAlpha());
             
-            Object* objectNextKey = timeline.m_owner->getNextObjectByTime(objectRef->getTimeline(), frameTime);        
+            Object* objectNextKey = timeline.m_owner->getNextObjectByTime(objectRef->getTimeline(), frameTime);
             
             if(frameTime != object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != object->getTime()) {
                 float nextFrameTime = objectNextKey->getTime();
@@ -298,6 +300,19 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                     objectTransform = *new Transform(prevObj->getX(), prevObj->getY(), prevObj->getAngle(), prevObj->getScaleX(), prevObj->getScaleY(), prevObj->getSpin(), prevObj->getAlpha());
                     Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin(), objectNextKey->getAlpha());
                     objectTransform.lerp(nextKeyTransform, averagingFactor, prevObj->getSpin());
+                }
+            } else if (frameTime < object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != frameTime && frameTime != prevObjTime) {
+                float nextFrameTime = objectNextKey->getTime();
+                if(!(timeline.m_owner->getLooping() == false && nextFrameTime == 0)) {
+                    if(nextFrameTime == 0) {
+                        nextFrameTime = timeline.m_owner->getLength();
+                    }
+                    if(nextFrameTime != prevObjTime) {
+                        float averagingFactor = ((float)frameTime - (float)prevObjTime) / (nextFrameTime - (float)prevObjTime);
+                        objectTransform = *new Transform(prevObj->getX(), prevObj->getY(), prevObj->getAngle(), prevObj->getScaleX(), prevObj->getScaleY(), prevObj->getSpin(), prevObj->getAlpha());
+                        Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin(), objectNextKey->getAlpha());
+                        objectTransform.lerp(nextKeyTransform, averagingFactor, prevObj->getSpin());
+                    }
                 }
             }
             
@@ -381,19 +396,19 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                 hasNext = true;
             }
 
-            if(prevObj == NULL || !resultObj->equals(*prevObj) || objectHasSoundlineFrame) {
-                Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevObj, hasNext);
+            if(prevResultObj == NULL || !resultObj->equals(*prevResultObj) || objectHasSoundlineFrame) {
+                Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevResultObj, hasNext);
                 if(frameTime == timeline.m_owner->getLength()) {
                     loopbackFrameAlreadyWritten = true;
                 }
             }            
             if(mainlineKeyTime < objectTime || soundlineTime < objectTime) {
-                if(prevObj != NULL) {
-                    resultObj->setPivotX(prevObj->getPivotX());
-                    resultObj->setPivotY(prevObj->getPivotY());
+                if(prevResultObj != NULL) {
+                    resultObj->setPivotX(prevResultObj->getPivotX());
+                    resultObj->setPivotY(prevResultObj->getPivotY());
                 }
             }
-            prevObj = resultObj;
+            prevResultObj = resultObj;
             
         }
         
@@ -405,6 +420,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         }
         
         if(objectTime < mainlineKeyTime && objectTime < soundlineTime) {
+            prevObj = *itObj;
             itObj++;
         } else if(mainlineKeyTime < objectTime && mainlineKeyTime < soundlineTime) {
             itMain++;
@@ -412,6 +428,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             itSounds++;
         } else {
             if((*itObj) != NULL && itObj != timeline.m_objects.end()) {
+                prevObj = *itObj;
                 itObj++;
             }
             if((*itMain) != NULL && itMain != timeline.m_owner->m_mainlineKeys.end()) {
@@ -426,8 +443,8 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         // if the last frame isn't specified as a keyframe and looping is enabled.
         // This makes it tween and loop smoothly like in the Spriter GUI rather than "jerk" back to the first frame after the final frame.
         if(!loopbackFrameAlreadyWritten && timeline.m_owner->getLooping() != false && itMain == timeline.m_owner->m_mainlineKeys.end() && itObj == timeline.m_objects.end() && (soundline == NULL || ((*itSounds) != NULL && itSounds == soundline->m_objects.end()))) {
-            //if(prevObj == NULL || !firstResultObj->equals(*prevObj)) {
-                Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex, prevObj, false);
+            //if(prevResultObj == NULL || !firstResultObj->equals(*prevResultObj)) {
+                Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex, prevResultObj, false);
             //}
         }
         
@@ -438,7 +455,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
     return out;
 }
 
-void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z, Object* prevObj, bool hasNext) {
+void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z, Object* prevResultObj, bool hasNext) {
     out << "\t\t\t\t[" << ++(*keyNum) << "] = {" << endl;
     
     out << "\t\t\t\t\t['angle'] = " << boost::format("%.4f") % resultObj->getAngle() << "," << endl;
@@ -461,9 +478,9 @@ void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline
     float pivot_y = resultObj->getPivotY();
     
     if((pivot_x == 0.0 && pivot_y == 0.0)) {
-        if(prevObj != NULL && (prevObj->getPivotX() != 0.0 || prevObj->getPivotY() != 0.0)) {
-            pivot_x = prevObj->getPivotX();
-            pivot_y = prevObj->getPivotY();
+        if(prevResultObj != NULL && (prevResultObj->getPivotX() != 0.0 || prevResultObj->getPivotY() != 0.0)) {
+            pivot_x = prevResultObj->getPivotX();
+            pivot_y = prevResultObj->getPivotY();
         } else if (resultObj->getFolder() != -1 && resultObj->getFile() != -1) {
             pivot_x = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getPivotX();
             pivot_y = timeline.m_owner->getFile(resultObj->getFolder(), resultObj->getFile())->getPivotY();
