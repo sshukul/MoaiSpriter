@@ -10,6 +10,7 @@
 #include <iostream>
 #include "entity.h"
 #include "animation.h"
+#include "characterMap.h"
 #include "spriterData.h"
 
 using namespace std;
@@ -40,12 +41,32 @@ void Entity::loadXML(const tinyxml2::XMLElement* a_element) {
             animation->loadXML(child);
             addAnimation(animation);
         }
+        if(strcmp(child->Name(), "character_map") == 0) {
+            CharacterMap* characterMap = new CharacterMap(this);
+            characterMap->loadXML(child);
+            addCharacterMap(characterMap);
+        }
         child = child->NextSiblingElement();
     }
 }
 
 void Entity::addAnimation(Animation* a_animation) {
     m_animations.push_back(a_animation);
+}
+
+void Entity::addCharacterMap(CharacterMap* a_character_map) {
+    m_character_maps.push_back(a_character_map);
+}
+
+void Entity::writeCharacterMaps(std::ostream& out) {
+    if(m_character_maps.size() >= 1) {
+        for(vector<CharacterMap*>::const_iterator it = m_character_maps.begin(); it != m_character_maps.end(); it++) {
+            out << *(*it);
+            if(it+1 != m_character_maps.end()) {
+                out << "," << endl;
+            }
+        }
+    }
 }
 
 std::ostream& operator<< (std::ostream& out, const Entity& entity){
@@ -63,5 +84,6 @@ std::ostream& operator<< (std::ostream& out, const Entity& entity){
     }
     return out;
 }
+
 
 

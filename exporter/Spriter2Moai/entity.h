@@ -16,6 +16,7 @@
 using namespace std;
 
 class Animation;
+class CharacterMap;
 class SpriterData;
 
 class Entity {
@@ -24,6 +25,7 @@ private:
     int m_id;
     string m_name;
     vector<Animation*> m_animations;
+    vector<CharacterMap*> m_character_maps;
 
 public:
     
@@ -38,12 +40,15 @@ public:
     inline void setId(int a_id) {m_id = a_id;}
     inline const string& getName() const {return m_name;}
     inline void setName(string a_name) {m_name = a_name;}
+    inline bool hasCharacterMaps () {return m_character_maps.size() >= 1;}
 
     void loadXML(const tinyxml2::XMLElement* a_element);
+    void writeCharacterMaps (std::ostream& out);
     
     friend std::ostream& operator<< (std::ostream& out, const Entity& entity);
     
-    void addAnimation(Animation* a_animation);    
+    void addAnimation(Animation* a_animation);
+    void addCharacterMap(CharacterMap* a_character_map);
 };
 
 std::ostream& operator<< (std::ostream& out, const Entity& entity);

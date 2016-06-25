@@ -104,47 +104,19 @@ std::ostream& operator<< (std::ostream& out, const SpriterData& spriter) {
         out << endl;
     }
     out << "}" << endl << endl;
-    /*out << "local tags = {" << endl;
-    
-    // Enormous nested loop to match up tags in the animation taglines with the
-    // ones in the tag list 5 XML levels up, where we want the output for moai
-    // TODO: implement in a cleaner way rather than exposing element lists as public and iterating
-    for(vector<TagList*>::const_iterator it = spriter.m_tagLists.begin(); it != spriter.m_tagLists.end(); it++) {
-        TagList* tagList = *(it);
-        for(vector<Tag*>::const_iterator itTaglineTag = tagList->m_tags.begin(); itTaglineTag != tagList->m_tags.end(); itTaglineTag++) {
-            Tag* taglineTag = *(itTaglineTag);
-            for(vector<Entity*>::const_iterator itEnt = spriter.m_entities.begin(); itEnt != spriter.m_entities.end(); itEnt++) {
-                Entity* entity = *(itEnt);
-                for(vector<Animation*>::const_iterator itAnim = entity->m_animations.begin(); itAnim != entity->m_animations.end(); itAnim++) {
-                    Animation* anim = *(itAnim);
-                    bool animWritten = false;
-                    for(vector<TaglineKey*>::const_iterator itTagKey = anim->m_taglineKeys.begin(); itTagKey != anim->m_taglineKeys.end(); itTagKey++) {
-                        TaglineKey* tKey = *(itTagKey);
-                        for(vector<Tag*>::const_iterator itTag = tKey->m_tags.begin(); itTag != tKey->m_tags.end(); itTag++) {
-                            Tag* tag = *(itTag);
-                            if(tag->getId() == taglineTag->getId()) {
-                                if(!animWritten) {
-                                    out << "\t['" << anim->getName() << "'] = {" << endl;
-                                    animWritten = true;
-                                }
-                                out << "\t\t['" << taglineTag->getName() << "'] = {";
-                                out << "\t\t}" << endl;
-                            }
-                        }
-                    }
-                    if(animWritten) {
-                        out << "\t}" << endl;
-                    }
-                }
+    out << "local charMaps = {" << endl;
+    for(vector<Entity*>::const_iterator it = spriter.m_entities.begin(); it != spriter.m_entities.end(); it++) {
+        Entity* entity = *(it);
+        if(entity->hasCharacterMaps()) {
+            entity->writeCharacterMaps(out);
+            if(it+1 != spriter.m_entities.end()) {
+                out << ",";
             }
+            out << endl;
         }
-        if(it+1 != spriter.m_tagLists.end()) {
-            out << ",";
-        }
-        out << endl;
     }
-    out << "}" << endl << endl; */
-    out << "return anim";
+    out << "}" << endl << endl;
+    out << "return anim, charMaps";
     return out;
 }
 
