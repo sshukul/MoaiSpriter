@@ -201,7 +201,6 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         
         MainlineKey* mKey = *itMain;
         Object* object = *itObj;
-        Object* nextObject = *itObj+1;
         Object* sound = NULL;
         
         if(soundline != NULL && itSounds != soundline->m_objects.end()) {
@@ -442,7 +441,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         // This bit adds a "loopback" keyframe which is the same as the first frame,
         // if the last frame isn't specified as a keyframe and looping is enabled.
         // This makes it tween and loop smoothly like in the Spriter GUI rather than "jerk" back to the first frame after the final frame.
-        if(!loopbackFrameAlreadyWritten && timeline.m_owner->getLooping() != false && itMain == timeline.m_owner->m_mainlineKeys.end() && itObj == timeline.m_objects.end() && (soundline == NULL || ((*itSounds) != NULL && itSounds == soundline->m_objects.end()))) {
+        if(!loopbackFrameAlreadyWritten && firstResultObj != NULL && timeline.m_owner->getLooping() != false && itMain == timeline.m_owner->m_mainlineKeys.end() && itObj == timeline.m_objects.end() && (soundline == NULL || ((*itSounds) != NULL && itSounds == soundline->m_objects.end()))) {
             //if(prevResultObj == NULL || !firstResultObj->equals(*prevResultObj)) {
                 Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex, prevResultObj, false);
             //}
