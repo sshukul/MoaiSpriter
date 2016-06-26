@@ -395,7 +395,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                 hasNext = true;
             }
 
-            if(prevResultObj == NULL || !resultObj->equals(*prevResultObj) || objectHasSoundlineFrame) {
+            if((frameTime == timeline.m_owner->getLength() && timeline.m_owner->getLooping() != false) || prevResultObj == NULL || !resultObj->equals(*prevResultObj) || objectHasSoundlineFrame) {
                 Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevResultObj, hasNext);
                 if(frameTime == timeline.m_owner->getLength()) {
                     loopbackFrameAlreadyWritten = true;
