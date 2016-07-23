@@ -79,7 +79,7 @@ float Timeline::calculateActualRotationAngle(float startAngle, float endAngle, i
     }
 }
 
-Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int length, bool looping) const {
+Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int length, bool looping, bool objectHasSoundlineFrame, int prevFrameTime, int nextFrameTime) const {
     Bone* bone = m_owner->getBone(boneRef->getTimeline(), boneRef->getKey());
     Transform boneTransform(0, 0, 0, 0, 0, 0, 0);
     if(bone != NULL) {
@@ -88,60 +88,43 @@ Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int leng
         
         //Bone* boneNextKey = m_owner->getBone(boneRef->getTimeline(), key);
         Bone* boneNextKey = m_owner->getNextBoneByTime(boneRef->getTimeline(), time);
-        if(time != bone->getTime() && boneNextKey != NULL && boneNextKey->getTime() != bone->getTime()) {
-            float nextFrameTime = boneNextKey->getTime();
-            if(!(looping == false && nextFrameTime == 0)) {
-                if(nextFrameTime == 0) {
-                    nextFrameTime = length;
-                }
-                float averagingFactor = ((float)time - (float)bone->getTime()) / (nextFrameTime - (float)bone->getTime());
-                Transform nextKeyTransform(boneNextKey->getX(), boneNextKey->getY(), boneNextKey->getAngle(), boneNextKey->getScaleX(), boneNextKey->getScaleY(), boneNextKey->getSpin(), 1.0);
-                boneTransform.lerp(nextKeyTransform, averagingFactor, bone->getSpin());
-            }
+        Bone* prevBone = m_owner->getPreviousBoneByTime(boneRef->getTimeline(), time);
+        int nextBoneTime = boneNextKey->getTime();
+        if(nextBoneTime == 0 && looping) {
+            nextBoneTime = length;
         }
         
-        if(boneNextKey != NULL && boneNextKey->getTime() != bone->getTime()) {
-            int nextMainlineKeyTime = 0;
-            for(vector<MainlineKey*>::const_iterator it = m_owner->m_mainlineKeys.begin(); it != m_owner->m_mainlineKeys.end(); it++) {
-                if((*it)->getTime() == time) {
-                    if(it+1 != m_owner->m_mainlineKeys.end()) {
-                        it++;
-                        nextMainlineKeyTime = (*it)->getTime();
-                        break;
-                    }
+        Transform nextKeyTransform(boneNextKey->getX(), boneNextKey->getY(), boneNextKey->getAngle(), boneNextKey->getScaleX(), boneNextKey->getScaleY(), boneNextKey->getSpin(), 1.0);
+         
+        if(objectHasSoundlineFrame && time != bone->getTime() && boneNextKey != NULL && boneNextKey->getTime() != time) {
+            if(!(looping == false && boneNextKey->getTime() == 0)) {
+                float averagingFactor = ((float)time - (float)prevFrameTime) / (boneNextKey->getTime() - (float)prevFrameTime);
+                boneTransform = *new Transform(prevBone->getX(), prevBone->getY(), prevBone->getAngle(), prevBone->getScaleX(), prevBone->getScaleY(), prevBone->getSpin(), 1.0);
+                boneTransform.lerp(nextKeyTransform, averagingFactor, prevBone->getSpin());
+                boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(boneTransform.angle, nextKeyTransform.angle, bone->getSpin());
+            }
+        } else if(time != bone->getTime() && boneNextKey != NULL && boneNextKey->getTime() != bone->getTime()) {
+            if(!(looping == false && boneNextKey->getTime() == 0)) {
+                float averagingFactor = ((float)time - (float)bone->getTime()) / ((float)nextBoneTime - (float)bone->getTime());
+                boneTransform.lerp(nextKeyTransform, averagingFactor, bone->getSpin());
+                boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(boneTransform.angle, nextKeyTransform.angle, bone->getSpin());
+            }
+        } else if (time < bone->getTime() && boneNextKey != NULL && boneNextKey->getTime() != time && time != prevBone->getTime()) {
+            if(!(looping == false && nextBoneTime == 0)) {
+                if(nextBoneTime != prevBone->getTime()) {
+                    float averagingFactor = ((float)time - (float)prevBone->getTime()) / (nextBoneTime - (float)prevBone->getTime());
+                    boneTransform = *new Transform(prevBone->getX(), prevBone->getY(), prevBone->getAngle(), prevBone->getScaleX(), prevBone->getScaleY(), prevBone->getSpin(), 1.0);
+                    boneTransform.lerp(nextKeyTransform, averagingFactor, prevBone->getSpin());
+                    boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(boneTransform.angle, nextKeyTransform.angle, bone->getSpin());
                 }
             }
-            
-            int nextKeyTime = boneNextKey->getTime();
-            if(nextMainlineKeyTime == 0) {
-                nextMainlineKeyTime = length;
-            }
-            if(boneNextKey->getTime() == 0) {
-                nextKeyTime = length;
-            }
-            
-            // Find the bone angle at the next keyframe, based on lerping if needed. Use it
-            // to calculate the rotation angle and spin for the bone.
-            if(nextKeyTime != nextMainlineKeyTime) {
-                bool skipLerp = false;
-                if(boneNextKey->getTime() == 0 && looping == false) {
-                    skipLerp = true;
-                }
-                // If there is no next bone keyframe and we are not looping, then there is no rotation for this
-                // bone. Otherwise calculate linear interpolation to find the rotation angle for the
-                // next keyframe.
-                if(!skipLerp) {
-                    float averagingFactor = ((float)nextMainlineKeyTime - (float) bone->getTime()) / ((float) nextKeyTime - (float) bone->getTime());
-                    Transform nextKeyTransform(boneNextKey->getX(), boneNextKey->getY(), boneNextKey->getAngle(), boneNextKey->getScaleX(), boneNextKey->getScaleY(), boneNextKey->getSpin(), 1.0);
-                    boneNextKeyTransform.lerp(nextKeyTransform, averagingFactor, bone->getSpin());
-                    boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(boneTransform.angle, boneNextKeyTransform.angle, bone->getSpin());
-                } else {
-                    boneTransform.rotationAngle = 0;
-                    boneTransform.spin = 0;
-                }
-            } else {
-                boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(boneTransform.angle, boneNextKey->getAngle(), bone->getSpin());
-            }
+        } else if(boneNextKey != NULL && nextBoneTime != bone->getTime()) {
+            boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(boneTransform.angle, boneNextKey->getAngle(), bone->getSpin());
+        }
+        
+        if(nextBoneTime != nextFrameTime && nextFrameTime != time) {
+            float averagingFactor = ((float)nextFrameTime - (float)time) / ((float)nextBoneTime - (float)time);
+            boneTransform.rotationAngle = boneTransform.rotationAngle * averagingFactor;
         }
     }
     
@@ -151,7 +134,7 @@ Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int leng
             parent = m_owner->getBoneReference(boneRef->getParent(), key);
         }
         if(parent != NULL) {
-            Transform parentTransform = buildTransform(parent, key, time, length, looping);
+            Transform parentTransform = buildTransform(parent, key, time, length, looping, objectHasSoundlineFrame, prevFrameTime, nextFrameTime);
             boneTransform.apply_parent_transform(parentTransform);
         }
     }
@@ -292,9 +275,13 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                     nextMainlineKeyTime = (*(itMain + 1))->getTime();
                 }
             }
-            int nextAltKeyTime = min(nextSoundlineTime, nextMainlineKeyTime);            
+            int nextAltKeyTime = min(nextSoundlineTime, nextMainlineKeyTime);
             if(nextAltKeyTime == 0) {
                 nextAltKeyTime = timeline.m_owner->getLength();
+            }
+            int nextFrameTime = nextAltKeyTime;
+            if(nextObject != NULL) {
+                nextFrameTime = min(nextAltKeyTime, (int) nextObject->getTime());
             }
             Object* objectNextKey = object;
             if (objectTime < frameTime) {
@@ -307,12 +294,6 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                     objectTransform = *new Transform(prevObj->getX(), prevObj->getY(), prevObj->getAngle(), prevObj->getScaleX(), prevObj->getScaleY(), prevObj->getSpin(), prevObj->getAlpha());
                     Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin(), objectNextKey->getAlpha());
                     objectTransform.lerp(nextKeyTransform, averagingFactor, prevObj->getSpin());
-                }
-            } else if(frameTime != object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != object->getTime()) {
-                if(!(timeline.m_owner->getLooping() == false && objectNextKey->getTime() == 0)) {
-                    float averagingFactor = ((float)frameTime - (float)prevObj->getTime()) / objectNextKey->getTime();
-                    Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin(), objectNextKey->getAlpha());
-                    objectTransform.lerp(nextKeyTransform, averagingFactor, object->getSpin());
                 }
             } else if (frameTime < object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != frameTime && frameTime != prevObjTime) {
                 float nextFrameTime = objectNextKey->getTime();
@@ -330,17 +311,6 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             }
             
             if(nextObject != NULL && object->getTime() != nextObject->getTime()) {
-                
-                /* int nextMainlineKeyTime = 0;
-                for(vector<MainlineKey*>::const_iterator it = timeline.m_owner->m_mainlineKeys.begin(); it != timeline.m_owner->m_mainlineKeys.end(); it++) {
-                    if((*it)->getTime() == frameTime) {
-                        if(it+1 != timeline.m_owner->m_mainlineKeys.end()) {
-                            it++;
-                            nextMainlineKeyTime = (*it)->getTime();
-                            break;
-                        }
-                    }
-                } */
                 int nextKeyTime = nextObject->getTime();
                 if(nextObject->getTime() == 0) {
                     nextKeyTime = timeline.m_owner->getLength();
@@ -372,11 +342,11 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             }
             
             BoneRef* boneRef = timeline.m_owner->getTimedBoneReference(objectRef, frameTime);
-            if(boneRef == NULL /* && frameTime == mainlineKeyTime */) {
+            if(boneRef == NULL) {
                 boneRef = timeline.m_owner->getBoneReference(objectRef, mainlineKeyId);
             }
             if (boneRef != NULL) {
-                Transform parentTransform = timeline.buildTransform(boneRef, mainlineKeyId, frameTime, timeline.m_owner->getLength(), timeline.m_owner->getLooping());
+                Transform parentTransform = timeline.buildTransform(boneRef, mainlineKeyId, frameTime, timeline.m_owner->getLength(), timeline.m_owner->getLooping(), objectHasSoundlineFrame, prevFrameTime, nextFrameTime);
                 objectTransform.apply_parent_transform(parentTransform);
             }
             
@@ -581,6 +551,25 @@ Bone* Timeline::getNextBoneByTime(int time) {
         } else if(it+1 == m_bones.end()) {
             it = m_bones.begin();
             return (*it);
+        }
+    }
+    return NULL;
+}
+
+Bone* Timeline::getPreviousBoneByTime(int time) const {
+    if(isTypeObject() || isTypePoint())
+        return NULL;
+    for(vector<Bone*>::const_iterator it = m_bones.begin(); it != m_bones.end(); it++) {
+        if((*it)->getTime() >= time) {
+            it--;
+            if(it != m_bones.begin()) {
+                return (*it);
+            } else {
+                it = m_bones.end();
+                return (*it);
+            }
+        } else if(it+1 == m_bones.end()) {
+            return (*it--);
         }
     }
     return NULL;

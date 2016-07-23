@@ -70,6 +70,7 @@ public:
     Bone* getBone(unsigned int a_timelineIndex, unsigned int a_keyIndex);
     Bone* getBoneByTime(unsigned int a_timelineIndex, int time);
     Bone* getNextBoneByTime(unsigned int a_timelineIndex, int time);
+    Bone* getPreviousBoneByTime(unsigned int a_timelineIndex, int time);
     Object* getObject(unsigned int a_timelineIndex, unsigned int a_keyIndex);
     Object* getObjectByTime(unsigned int a_timelineIndex, int time);
     Object* getNextObjectByTime(unsigned int a_timelineIndex, int time);

@@ -57,7 +57,7 @@ public:
     
     friend std::ostream& operator<< (std::ostream& out, const Timeline& timeline);
     
-    Transform buildTransform(BoneRef* objectRef, int key, int time, int length, bool looping) const;
+    Transform buildTransform(BoneRef* objectRef, int key, int time, int length, bool looping, bool objectHasSoundlineFrame, int prevFrameTime, int nextFrameTime) const;
     
     void addObject(Object* a_object);
     void addBone(Bone* a_bone);
@@ -68,6 +68,7 @@ public:
     Bone* getBone(int a_index);
     Bone* getBoneByTime(int time);
     Bone* getNextBoneByTime(int time);
+    Bone* getPreviousBoneByTime(int time) const;
 };
 
 std::ostream& operator<< (std::ostream& out, const Timeline& timeline);

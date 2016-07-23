@@ -96,6 +96,19 @@ Bone* Animation::getNextBoneByTime(unsigned int a_timelineIndex, int time) {
     return NULL;
 }
 
+Bone* Animation::getPreviousBoneByTime(unsigned int a_timelineIndex, int time) {
+    if(a_timelineIndex >= m_timelines.size())
+        return NULL;
+    
+    if(m_timelines[a_timelineIndex] == NULL)
+        return NULL;
+    
+    if(m_timelines[a_timelineIndex]->getObjectType().compare("bone") == 0) {
+        return m_timelines[a_timelineIndex]->getPreviousBoneByTime(time);
+    }
+    return NULL;
+}
+
 Object* Animation::getObject(unsigned int a_timelineIndex, unsigned int a_keyIndex) {    
     if(a_timelineIndex >= m_timelines.size())
         return NULL;
