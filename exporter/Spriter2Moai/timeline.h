@@ -32,7 +32,7 @@ private:
     vector<Object*> m_objects;
     vector<Bone*> m_bones;
     
-    static void writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z, Object* prevObj, bool hasNext);
+    static void writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z, Object* prevObj, bool hasNext, MainlineKey* mKey);
     
     static float calculateActualRotationAngle(float startAngle, float endAngle, int spin);
     

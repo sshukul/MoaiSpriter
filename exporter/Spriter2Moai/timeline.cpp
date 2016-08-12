@@ -378,7 +378,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             }
 
             if(!skipFrame && ((frameTime == timeline.m_owner->getLength() && timeline.m_owner->getLooping() != false) || prevResultObj == NULL || !resultObj->equals(*prevResultObj) || objectHasSoundlineFrame)) {
-                Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevResultObj, hasNext);
+                Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevResultObj, hasNext, mKey);
                 if(frameTime == timeline.m_owner->getLength()) {
                     loopbackFrameAlreadyWritten = true;
                 }
@@ -425,7 +425,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         // This makes it tween and loop smoothly like in the Spriter GUI rather than "jerk" back to the first frame after the final frame.
         if(!loopbackFrameAlreadyWritten && firstResultObj != NULL && timeline.m_owner->getLooping() != false && itMain == timeline.m_owner->m_mainlineKeys.end() && itObj == timeline.m_objects.end() && (soundline == NULL || ((*itSounds) != NULL && itSounds == soundline->m_objects.end()))) {
             //if(prevResultObj == NULL || !firstResultObj->equals(*prevResultObj)) {
-                Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex, prevResultObj, false);
+                Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex, prevResultObj, false, mKey);
             //}
         }
         
@@ -436,7 +436,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
     return out;
 }
 
-void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z, Object* prevResultObj, bool hasNext) {
+void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z, Object* prevResultObj, bool hasNext, MainlineKey* mKey) {
     out << "\t\t\t\t[" << ++(*keyNum) << "] = {" << endl;
     
     out << "\t\t\t\t\t['angle'] = " << boost::format("%.4f") % resultObj->getAngle() << "," << endl;
@@ -452,6 +452,21 @@ void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline
     out << "\t\t\t\t\t['zindex'] = " << z << "," << endl;
     out << "\t\t\t\t\t['scale_x'] = " << boost::format("%.4f") % resultObj->getScaleX() << "," << endl;
     out << "\t\t\t\t\t['scale_y'] = " << boost::format("%.4f") % resultObj->getScaleY() << "," << endl;
+    if(mKey != NULL && mKey->getCurveType() != "") {
+        out << "\t\t\t\t\t['curve_type'] = '" << mKey->getCurveType() << "'," << endl;
+    }
+    if(mKey != NULL && mKey->getC1() >= 0.0) {
+        out << "\t\t\t\t\t['c1'] = " << mKey->getC1() << "," << endl;
+    }
+    if(mKey != NULL && mKey->getC2() >= 0.0) {
+        out << "\t\t\t\t\t['c2'] = " << mKey->getC2() << "," << endl;
+    }
+    if(mKey != NULL && mKey->getC3() >= 0.0) {
+        out << "\t\t\t\t\t['c3'] = " << mKey->getC3() << "," << endl;
+    }
+    if(mKey != NULL && mKey->getC4() >= 0.0) {
+        out << "\t\t\t\t\t['c4'] = " << mKey->getC4() << "," << endl;
+    }
     out << "\t\t\t\t\t['time'] = " << time << "," << endl;
     
     // Adjust pivot points to default if they are different.
