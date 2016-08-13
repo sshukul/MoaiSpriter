@@ -377,7 +377,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                 hasNext = true;
             }
 
-            if(!skipFrame && ((frameTime == timeline.m_owner->getLength() && timeline.m_owner->getLooping() != false) || prevResultObj == NULL || !resultObj->equals(*prevResultObj) || objectHasSoundlineFrame)) {
+            if(!skipFrame && ((frameTime == timeline.m_owner->getLength() && timeline.m_owner->getLooping() != false) || prevResultObj == NULL || !resultObj->equals(*prevResultObj) || (objectHasSoundlineFrame && (soundlineTime != prevFrameTime)))) {
                 Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevResultObj, hasNext, mKey);
                 if(frameTime == timeline.m_owner->getLength()) {
                     loopbackFrameAlreadyWritten = true;
@@ -416,7 +416,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                 itMain++;
             }
             if(soundline != NULL && (*itSounds) != NULL && itSounds != soundline->m_objects.end()) {
-                itMain++;
+                itSounds++;
             }
         }
         
