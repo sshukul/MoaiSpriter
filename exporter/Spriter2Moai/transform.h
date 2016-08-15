@@ -9,6 +9,10 @@
 #ifndef __Spriter2Moai__transform__
 #define __Spriter2Moai__transform__
 
+#include <string>
+
+using namespace std;
+
 class Transform
 {
 public:
@@ -19,6 +23,13 @@ public:
     float alpha;
     int spin;
     float rotationAngle = 0;
+    
+    // These are attributes for custom animation curves like cubic, quadratic etc.
+    string m_curve_type = "";
+    float m_c1 = -1.0;
+    float m_c2 = -1.0;
+    float m_c3 = -1.0;
+    float m_c4 = -1.0;
     
     Transform();
     Transform(float x, float y, float angle, float scale_x, float scale_y, int spin, float alpha);

@@ -29,6 +29,14 @@ private:
     int m_id;
     string m_name;
     string m_objectType;
+    
+    // These are attributes for custom animation curves like cubic, quadratic etc.
+    string m_curve_type = "";
+    float m_c1 = -1.0;
+    float m_c2 = -1.0;
+    float m_c3 = -1.0;
+    float m_c4 = -1.0;
+    
     vector<Object*> m_objects;
     vector<Bone*> m_bones;
     
@@ -49,6 +57,11 @@ public:
     inline void setName(string a_name) {m_name = a_name;}
     inline const string& getObjectType() const {return m_objectType;}
     inline void setObjectType(string a_objectType) {m_objectType = a_objectType;}
+    inline string getCurveType() const {return m_curve_type;}
+    inline float getC1() const {return m_c1;}
+    inline float getC2() const {return m_c2;}
+    inline float getC3() const {return m_c3;}
+    inline float getC4() const {return m_c4;}
     
     inline bool isTypeObject() const {return (m_objectType.compare("object")==0);}
     inline bool isTypePoint() const {return (m_objectType.compare("point")==0);}
@@ -57,7 +70,7 @@ public:
     
     friend std::ostream& operator<< (std::ostream& out, const Timeline& timeline);
     
-    Transform buildTransform(BoneRef* objectRef, int key, int time, int length, bool looping, bool objectHasSoundlineFrame, int prevFrameTime, int nextFrameTime) const;
+    std::pair<Transform, bool>* buildTransform(BoneRef* objectRef, int key, int time, int length, bool looping, bool objectHasSoundlineFrame, int prevFrameTime, int nextFrameTime) const;
     
     void addObject(Object* a_object);
     void addBone(Bone* a_bone);

@@ -10,6 +10,9 @@
 #define __Spriter2Moai__object__
 
 #include "tinyxml2.h"
+#include <string>
+
+using namespace std;
 
 class Object {
 private:
@@ -26,6 +29,13 @@ private:
     float m_pivot_x = 0.0;
     float m_pivot_y = 0.0;
     float m_alpha;
+    
+    // These are attributes for custom animation curves like cubic, quadratic etc.
+    string m_curve_type = "";
+    float m_c1 = -1.0;
+    float m_c2 = -1.0;
+    float m_c3 = -1.0;
+    float m_c4 = -1.0;
     
 public:
     Object(): m_id(-1), m_folder(-1), m_file(-1), m_x(0), m_y(0), m_angle(0), m_scaleX(1), m_scaleY(1), m_time(0), m_spin(1), m_pivot_x(0.0), m_pivot_y(0.0), m_alpha(1.0) {}
@@ -58,6 +68,12 @@ public:
     inline void setPivotY(float a_pivot_y) {m_pivot_y = a_pivot_y;}
     inline float getAlpha() const {return m_alpha;}
     inline void setAlpha(float a_alpha) {m_alpha = a_alpha;}
+    
+    inline string getCurveType() const {return m_curve_type;}
+    inline float getC1() const {return m_c1;}
+    inline float getC2() const {return m_c2;}
+    inline float getC3() const {return m_c3;}
+    inline float getC4() const {return m_c4;}
     
     bool equals(const Object& o);
     Object* clone();

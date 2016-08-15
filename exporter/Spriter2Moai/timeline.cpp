@@ -43,6 +43,31 @@ void Timeline::loadXML(const tinyxml2::XMLElement* a_element) {
         m_objectType = attb->Value();
     }
     
+    attb = a_element->FindAttribute("curve_type");
+    if(attb) {
+        m_curve_type = attb->Value();
+    }
+    
+    attb = a_element->FindAttribute("c1");
+    if(attb) {
+        m_c1 = attb->FloatValue();
+    }
+    
+    attb = a_element->FindAttribute("c2");
+    if(attb) {
+        m_c2 = attb->FloatValue();
+    }
+    
+    attb = a_element->FindAttribute("c3");
+    if(attb) {
+        m_c3 = attb->FloatValue();
+    }
+    
+    attb = a_element->FindAttribute("c4");
+    if(attb) {
+        m_c4 = attb->FloatValue();
+    }
+    
     const tinyxml2::XMLElement* child = a_element->FirstChildElement();
     while(child) {
         if(strcmp(child->Name(), "key") == 0) {
@@ -79,10 +104,14 @@ float Timeline::calculateActualRotationAngle(float startAngle, float endAngle, i
     }
 }
 
-Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int length, bool looping, bool objectHasSoundlineFrame, int prevFrameTime, int nextFrameTime) const {
+std::pair<Transform, bool>* Timeline::buildTransform(BoneRef* boneRef, int key, int time, int length, bool looping, bool objectHasSoundlineFrame, int prevFrameTime, int nextFrameTime) const {
     Bone* bone = m_owner->getBone(boneRef->getTimeline(), boneRef->getKey());
     Transform boneTransform(0, 0, 0, 0, 0, 0, 0);
+    bool isTimelineKeyframe = false;
     if(bone != NULL) {
+        if(time == bone->getTime()) {
+            isTimelineKeyframe = true;
+        }
         boneTransform = Transform(bone->getX(), bone->getY(), bone->getAngle(), bone->getScaleX(), bone->getScaleY(), bone->getSpin(), 1.0);
         Transform boneNextKeyTransform(bone->getX(), bone->getY(), bone->getAngle(), bone->getScaleX(), bone->getScaleY(), bone->getSpin(), 1.0);
         
@@ -134,12 +163,13 @@ Transform Timeline::buildTransform(BoneRef* boneRef, int key, int time, int leng
             parent = m_owner->getBoneReference(boneRef->getParent(), key);
         }
         if(parent != NULL) {
-            Transform parentTransform = buildTransform(parent, key, time, length, looping, objectHasSoundlineFrame, prevFrameTime, nextFrameTime);
-            boneTransform.apply_parent_transform(parentTransform);
+            pair<Transform, bool>* result = buildTransform(parent, key, time, length, looping, objectHasSoundlineFrame, prevFrameTime, nextFrameTime);
+            boneTransform.apply_parent_transform(result->first);
+            isTimelineKeyframe = isTimelineKeyframe || result->second;
         }
     }
     
-    return boneTransform;
+    return new std::pair<Transform, bool>(boneTransform, isTimelineKeyframe);
 }
 
 // this is the trickest part in the program, because we need to output the objects in each timeline (each timeline
@@ -175,6 +205,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
     }
     
     for(vector<MainlineKey*>::const_iterator itMain = timeline.m_owner->m_mainlineKeys.begin(); itMain != timeline.m_owner->m_mainlineKeys.end() || itObj != timeline.m_objects.end() || (soundline != NULL && itSounds != soundline->m_objects.end()); ) {
+        bool isTimelineKeyframe = false;
         unsigned int frameTime = 0;
         
         MainlineKey* mKey = *itMain;
@@ -246,6 +277,10 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
     
         if(objectHasNonMainlineFrame && object != NULL) {
             mainlineKeyId = object->getId();
+        }
+        
+        if(frameTime == objectTime) {
+            isTimelineKeyframe = true;
         }
     
         if(object != NULL && objectRef != NULL && !skipFrame) {
@@ -346,8 +381,9 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                 boneRef = timeline.m_owner->getBoneReference(objectRef, mainlineKeyId);
             }
             if (boneRef != NULL) {
-                Transform parentTransform = timeline.buildTransform(boneRef, mainlineKeyId, frameTime, timeline.m_owner->getLength(), timeline.m_owner->getLooping(), objectHasSoundlineFrame, prevFrameTime, nextFrameTime);
-                objectTransform.apply_parent_transform(parentTransform);
+                pair<Transform, bool>* result = timeline.buildTransform(boneRef, mainlineKeyId, frameTime, timeline.m_owner->getLength(), timeline.m_owner->getLooping(), objectHasSoundlineFrame, prevFrameTime, nextFrameTime);
+                objectTransform.apply_parent_transform(result->first);
+                isTimelineKeyframe = isTimelineKeyframe || result->second;
             }
             
             if (objectRef != NULL) {
@@ -377,12 +413,14 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                 hasNext = true;
             }
 
-            if(!skipFrame && ((frameTime == timeline.m_owner->getLength() && timeline.m_owner->getLooping() != false) || prevResultObj == NULL || !resultObj->equals(*prevResultObj) || (objectHasSoundlineFrame && (soundlineTime != prevFrameTime)))) {
-                Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevResultObj, hasNext, mKey);
-                if(frameTime == timeline.m_owner->getLength()) {
-                    loopbackFrameAlreadyWritten = true;
+            if(isTimelineKeyframe || objectHasSoundlineFrame) {
+                if(!skipFrame && ((frameTime == timeline.m_owner->getLength() && timeline.m_owner->getLooping() != false) || prevResultObj == NULL || !resultObj->equals(*prevResultObj) || (objectHasSoundlineFrame && (soundlineTime != prevFrameTime)))) {
+                    Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevResultObj, hasNext, mKey);
+                    if(frameTime == timeline.m_owner->getLength()) {
+                        loopbackFrameAlreadyWritten = true;
+                    }
                 }
-            }            
+            }
             if(mainlineKeyTime < objectTime || soundlineTime < objectTime) {
                 if(prevResultObj != NULL) {
                     resultObj->setPivotX(prevResultObj->getPivotX());
