@@ -70,10 +70,15 @@ public:
     inline void setAlpha(float a_alpha) {m_alpha = a_alpha;}
     
     inline string getCurveType() const {return m_curve_type;}
+    inline void setCurveType(string a_curve_type) {m_curve_type = a_curve_type;}
     inline float getC1() const {return m_c1;}
+    inline void setC1(float a_c1) {m_c1 = a_c1;}
     inline float getC2() const {return m_c2;}
+    inline void setC2(float a_c2) {m_c2 = a_c2;}
     inline float getC3() const {return m_c3;}
+    inline void setC3(float a_c3) {m_c3 = a_c3;}
     inline float getC4() const {return m_c4;}
+    inline void setC4(float a_c4) {m_c4 = a_c4;}
     
     bool equals(const Object& o);
     Object* clone();

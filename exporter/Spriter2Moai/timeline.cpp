@@ -43,31 +43,6 @@ void Timeline::loadXML(const tinyxml2::XMLElement* a_element) {
         m_objectType = attb->Value();
     }
     
-    attb = a_element->FindAttribute("curve_type");
-    if(attb) {
-        m_curve_type = attb->Value();
-    }
-    
-    attb = a_element->FindAttribute("c1");
-    if(attb) {
-        m_c1 = attb->FloatValue();
-    }
-    
-    attb = a_element->FindAttribute("c2");
-    if(attb) {
-        m_c2 = attb->FloatValue();
-    }
-    
-    attb = a_element->FindAttribute("c3");
-    if(attb) {
-        m_c3 = attb->FloatValue();
-    }
-    
-    attb = a_element->FindAttribute("c4");
-    if(attb) {
-        m_c4 = attb->FloatValue();
-    }
-    
     const tinyxml2::XMLElement* child = a_element->FirstChildElement();
     while(child) {
         if(strcmp(child->Name(), "key") == 0) {
@@ -106,14 +81,14 @@ float Timeline::calculateActualRotationAngle(float startAngle, float endAngle, i
 
 std::pair<Transform, bool>* Timeline::buildTransform(BoneRef* boneRef, int key, int time, int length, bool looping, bool objectHasSoundlineFrame, int prevFrameTime, int nextFrameTime) const {
     Bone* bone = m_owner->getBone(boneRef->getTimeline(), boneRef->getKey());
-    Transform boneTransform(0, 0, 0, 0, 0, 0, 0);
+    Transform boneTransform(0, 0, 0, 0, 0, 0, 0, "", -1, -1, -1, -1);
     bool isTimelineKeyframe = false;
     if(bone != NULL) {
         if(time == bone->getTime()) {
             isTimelineKeyframe = true;
         }
-        boneTransform = Transform(bone->getX(), bone->getY(), bone->getAngle(), bone->getScaleX(), bone->getScaleY(), bone->getSpin(), 1.0);
-        Transform boneNextKeyTransform(bone->getX(), bone->getY(), bone->getAngle(), bone->getScaleX(), bone->getScaleY(), bone->getSpin(), 1.0);
+        boneTransform = Transform(bone->getX(), bone->getY(), bone->getAngle(), bone->getScaleX(), bone->getScaleY(), bone->getSpin(), 1.0, bone->getCurveType(), bone->getC1(), bone->getC2(), bone->getC3(), bone->getC4());
+        Transform boneNextKeyTransform(bone->getX(), bone->getY(), bone->getAngle(), bone->getScaleX(), bone->getScaleY(), bone->getSpin(), 1.0, bone->getCurveType(), bone->getC1(), bone->getC2(), bone->getC3(), bone->getC4());
         
         //Bone* boneNextKey = m_owner->getBone(boneRef->getTimeline(), key);
         Bone* boneNextKey = m_owner->getNextBoneByTime(boneRef->getTimeline(), time);
@@ -123,12 +98,14 @@ std::pair<Transform, bool>* Timeline::buildTransform(BoneRef* boneRef, int key, 
             nextBoneTime = length;
         }
         
-        Transform nextKeyTransform(boneNextKey->getX(), boneNextKey->getY(), boneNextKey->getAngle(), boneNextKey->getScaleX(), boneNextKey->getScaleY(), boneNextKey->getSpin(), 1.0);
+        Transform nextKeyTransform(boneNextKey->getX(), boneNextKey->getY(), boneNextKey->getAngle(), boneNextKey->getScaleX(), boneNextKey->getScaleY(), boneNextKey->getSpin(), 1.0,
+            boneNextKey->getCurveType(), boneNextKey->getC1(), boneNextKey->getC2(), boneNextKey->getC3(),
+            boneNextKey->getC4());
          
         if(objectHasSoundlineFrame && time != bone->getTime() && boneNextKey != NULL && boneNextKey->getTime() != time) {
             if(!(looping == false && boneNextKey->getTime() == 0)) {
                 float averagingFactor = ((float)time - (float)prevFrameTime) / (boneNextKey->getTime() - (float)prevFrameTime);
-                boneTransform = *new Transform(prevBone->getX(), prevBone->getY(), prevBone->getAngle(), prevBone->getScaleX(), prevBone->getScaleY(), prevBone->getSpin(), 1.0);
+                boneTransform = *new Transform(prevBone->getX(), prevBone->getY(), prevBone->getAngle(), prevBone->getScaleX(), prevBone->getScaleY(), prevBone->getSpin(), 1.0, prevBone->getCurveType(), prevBone->getC1(), prevBone->getC2(), prevBone->getC3(), prevBone->getC4());
                 boneTransform.lerp(nextKeyTransform, averagingFactor, prevBone->getSpin());
                 boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(boneTransform.angle, nextKeyTransform.angle, bone->getSpin());
             }
@@ -142,7 +119,7 @@ std::pair<Transform, bool>* Timeline::buildTransform(BoneRef* boneRef, int key, 
             if(!(looping == false && nextBoneTime == 0)) {
                 if(nextBoneTime != prevBone->getTime()) {
                     float averagingFactor = ((float)time - (float)prevBone->getTime()) / (nextBoneTime - (float)prevBone->getTime());
-                    boneTransform = *new Transform(prevBone->getX(), prevBone->getY(), prevBone->getAngle(), prevBone->getScaleX(), prevBone->getScaleY(), prevBone->getSpin(), 1.0);
+                    boneTransform = *new Transform(prevBone->getX(), prevBone->getY(), prevBone->getAngle(), prevBone->getScaleX(), prevBone->getScaleY(), prevBone->getSpin(), 1.0, prevBone->getCurveType(), prevBone->getC1(), prevBone->getC2(), prevBone->getC3(), prevBone->getC4());
                     boneTransform.lerp(nextKeyTransform, averagingFactor, prevBone->getSpin());
                     boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(boneTransform.angle, nextKeyTransform.angle, bone->getSpin());
                 }
@@ -287,8 +264,8 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             // search the mainline for any references to this timeline and key pair
             int z = 0;
             
-            Transform objectTransform(object->getX(), object->getY(), object->getAngle(), object->getScaleX(), object->getScaleY(), object->getSpin(), object->getAlpha());
-            Transform objectNextKeyTransform(object->getX(), object->getY(), object->getAngle(), object->getScaleX(), object->getScaleY(), object->getSpin(), object->getAlpha());
+            Transform objectTransform(object->getX(), object->getY(), object->getAngle(), object->getScaleX(), object->getScaleY(), object->getSpin(), object->getAlpha(), object->getCurveType(), object->getC1(), object->getC2(), object->getC3(), object->getC4());
+            Transform objectNextKeyTransform(object->getX(), object->getY(), object->getAngle(), object->getScaleX(), object->getScaleY(), object->getSpin(), object->getAlpha(), object->getCurveType(), object->getC1(), object->getC2(), object->getC3(), object->getC4());
             
             //Object* objectNextKey = timeline.m_owner->getNextObjectByTime(objectRef->getTimeline(), frameTime);
         
@@ -326,8 +303,8 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             if(objectHasSoundlineFrame && frameTime != object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != frameTime) {
                 if(!(timeline.m_owner->getLooping() == false && objectNextKey->getTime() == 0)) {
                     float averagingFactor = ((float)frameTime - (float)prevFrameTime) / (objectNextKey->getTime() - (float)prevFrameTime);
-                    objectTransform = *new Transform(prevObj->getX(), prevObj->getY(), prevObj->getAngle(), prevObj->getScaleX(), prevObj->getScaleY(), prevObj->getSpin(), prevObj->getAlpha());
-                    Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin(), objectNextKey->getAlpha());
+                    objectTransform = *new Transform(prevObj->getX(), prevObj->getY(), prevObj->getAngle(), prevObj->getScaleX(), prevObj->getScaleY(), prevObj->getSpin(), prevObj->getAlpha(), prevObj->getCurveType(), prevObj->getC1(), prevObj->getC2(), prevObj->getC3(), prevObj->getC4());
+                    Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin(), objectNextKey->getAlpha(), objectNextKey->getCurveType(), objectNextKey->getC1(), objectNextKey->getC2(), objectNextKey->getC3(), objectNextKey->getC4());
                     objectTransform.lerp(nextKeyTransform, averagingFactor, prevObj->getSpin());
                 }
             } else if (frameTime < object->getTime() && objectNextKey != NULL && objectNextKey->getTime() != frameTime && frameTime != prevObjTime) {
@@ -338,8 +315,8 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                     }
                     if(nextFrameTime != prevObjTime) {
                         float averagingFactor = ((float)frameTime - (float)prevObjTime) / (nextFrameTime - (float)prevObjTime);
-                        objectTransform = *new Transform(prevObj->getX(), prevObj->getY(), prevObj->getAngle(), prevObj->getScaleX(), prevObj->getScaleY(), prevObj->getSpin(), prevObj->getAlpha());
-                        Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin(), objectNextKey->getAlpha());
+                        objectTransform = *new Transform(prevObj->getX(), prevObj->getY(), prevObj->getAngle(), prevObj->getScaleX(), prevObj->getScaleY(), prevObj->getSpin(), prevObj->getAlpha(), prevObj->getCurveType(), prevObj->getC1(), prevObj->getC2(), prevObj->getC3(), prevObj->getC4());
+                        Transform nextKeyTransform(objectNextKey->getX(), objectNextKey->getY(), objectNextKey->getAngle(), objectNextKey->getScaleX(), objectNextKey->getScaleY(), objectNextKey->getSpin(), objectNextKey->getAlpha(), objectNextKey->getCurveType(), objectNextKey->getC1(), objectNextKey->getC2(), objectNextKey->getC3(), objectNextKey->getC4());
                         objectTransform.lerp(nextKeyTransform, averagingFactor, prevObj->getSpin());
                     }
                 }
@@ -364,7 +341,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                     // the rotation angle for the next keyframe.
                     if(!skipLerp) {
                         float averagingFactor = ((float)nextAltKeyTime - (float) object->getTime()) / ((float) nextKeyTime - (float) object->getTime());
-                        Transform nextKeyTransform(nextObject->getX(), nextObject->getY(), nextObject->getAngle(), nextObject->getScaleX(), nextObject->getScaleY(), nextObject->getSpin(), nextObject->getAlpha());
+                        Transform nextKeyTransform(nextObject->getX(), nextObject->getY(), nextObject->getAngle(), nextObject->getScaleX(), nextObject->getScaleY(), nextObject->getSpin(), nextObject->getAlpha(), nextObject->getCurveType(), nextObject->getC1(), nextObject->getC2(), nextObject->getC3(), nextObject->getC4());
                         objectNextKeyTransform.lerp(nextKeyTransform, averagingFactor, object->getSpin());
                         objectTransform.rotationAngle = Timeline::calculateActualRotationAngle(objectTransform.angle, objectNextKeyTransform.angle, object->getSpin());
                     } else {
@@ -402,6 +379,11 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             resultObj->setPivotX(object->getPivotX());
             resultObj->setPivotY(object->getPivotY());
             resultObj->setAlpha(objectTransform.alpha);
+            resultObj->setCurveType(objectTransform.curve_type);
+            resultObj->setC1(objectTransform.c1);
+            resultObj->setC2(objectTransform.c2);
+            resultObj->setC3(objectTransform.c3);
+            resultObj->setC4(objectTransform.c4);
             
             if(itMain == timeline.m_owner->m_mainlineKeys.begin()) {
                 firstResultObj = resultObj;
@@ -412,10 +394,26 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             if(((*itObj) != NULL && itObj != timeline.m_objects.end()) || ((*itMain) != NULL && itMain != timeline.m_owner->m_mainlineKeys.end()) || (soundline != NULL && (*itSounds) != NULL && itSounds != soundline->m_objects.end())) {
                 hasNext = true;
             }
+            
+            if(resultObj->getCurveType() == "" && mKey != NULL && mKey->getCurveType() != "") {
+                resultObj->setCurveType(mKey->getCurveType());
+                if(mKey->getC1() >= 0.0) {
+                    resultObj->setC1(mKey->getC1());
+                }
+                if(mKey->getC2() >= 0.0) {
+                    resultObj->setC2(mKey->getC2());
+                }
+                if(mKey->getC3() >= 0.0) {
+                    resultObj->setC3(mKey->getC3());
+                }
+                if(mKey->getC4() >= 0.0) {
+                    resultObj->setC4(mKey->getC4());
+                }
+            }
 
             if(isTimelineKeyframe || objectHasSoundlineFrame) {
                 if(!skipFrame && ((frameTime == timeline.m_owner->getLength() && timeline.m_owner->getLooping() != false) || prevResultObj == NULL || !resultObj->equals(*prevResultObj) || (objectHasSoundlineFrame && (soundlineTime != prevFrameTime)))) {
-                    Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevResultObj, hasNext, mKey);
+                    Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevResultObj, hasNext);
                     if(frameTime == timeline.m_owner->getLength()) {
                         loopbackFrameAlreadyWritten = true;
                     }
@@ -463,7 +461,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
         // This makes it tween and loop smoothly like in the Spriter GUI rather than "jerk" back to the first frame after the final frame.
         if(!loopbackFrameAlreadyWritten && firstResultObj != NULL && timeline.m_owner->getLooping() != false && itMain == timeline.m_owner->m_mainlineKeys.end() && itObj == timeline.m_objects.end() && (soundline == NULL || ((*itSounds) != NULL && itSounds == soundline->m_objects.end()))) {
             //if(prevResultObj == NULL || !firstResultObj->equals(*prevResultObj)) {
-                Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex, prevResultObj, false, mKey);
+                Timeline::writeObject(timeline.m_owner->getLength(), firstResultObj, timeline, out, &keyNum, firstZIndex, prevResultObj, false);
             //}
         }
         
@@ -474,7 +472,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
     return out;
 }
 
-void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z, Object* prevResultObj, bool hasNext, MainlineKey* mKey) {
+void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline, std::ostream& out, int* keyNum, int z, Object* prevResultObj, bool hasNext) {
     out << "\t\t\t\t[" << ++(*keyNum) << "] = {" << endl;
     
     out << "\t\t\t\t\t['angle'] = " << boost::format("%.4f") % resultObj->getAngle() << "," << endl;
@@ -490,21 +488,23 @@ void Timeline::writeObject(int time, Object* resultObj, const Timeline& timeline
     out << "\t\t\t\t\t['zindex'] = " << z << "," << endl;
     out << "\t\t\t\t\t['scale_x'] = " << boost::format("%.4f") % resultObj->getScaleX() << "," << endl;
     out << "\t\t\t\t\t['scale_y'] = " << boost::format("%.4f") % resultObj->getScaleY() << "," << endl;
-    if(mKey != NULL && mKey->getCurveType() != "") {
-        out << "\t\t\t\t\t['curve_type'] = '" << mKey->getCurveType() << "'," << endl;
+
+    if(resultObj->getCurveType() != "") {
+        out << "\t\t\t\t\t['curve_type'] = '" << resultObj->getCurveType() << "'," << endl;
     }
-    if(mKey != NULL && mKey->getC1() >= 0.0) {
-        out << "\t\t\t\t\t['c1'] = " << mKey->getC1() << "," << endl;
+    if(resultObj->getC1() >= 0.0) {
+        out << "\t\t\t\t\t['c1'] = " << resultObj->getC1() << "," << endl;
     }
-    if(mKey != NULL && mKey->getC2() >= 0.0) {
-        out << "\t\t\t\t\t['c2'] = " << mKey->getC2() << "," << endl;
+    if(resultObj->getC2() >= 0.0) {
+        out << "\t\t\t\t\t['c2'] = " << resultObj->getC2() << "," << endl;
     }
-    if(mKey != NULL && mKey->getC3() >= 0.0) {
-        out << "\t\t\t\t\t['c3'] = " << mKey->getC3() << "," << endl;
+    if(resultObj->getC3() >= 0.0) {
+        out << "\t\t\t\t\t['c3'] = " << resultObj->getC3() << "," << endl;
     }
-    if(mKey != NULL && mKey->getC4() >= 0.0) {
-        out << "\t\t\t\t\t['c4'] = " << mKey->getC4() << "," << endl;
+    if(resultObj->getC4() >= 0.0) {
+        out << "\t\t\t\t\t['c4'] = " << resultObj->getC4() << "," << endl;
     }
+    
     out << "\t\t\t\t\t['time'] = " << time << "," << endl;
     
     // Adjust pivot points to default if they are different.

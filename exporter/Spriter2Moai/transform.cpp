@@ -32,8 +32,10 @@ Transform::Transform()
 : x(0.0f), y(0.0f), angle(0.0f), scale_x(1.0f), scale_y(1.0f), alpha(1.0f)
 {}
 
-Transform::Transform(float x, float y, float angle, float scale_x, float scale_y, int spin, float alpha)
-: x(x), y(y), angle(angle), scale_x(scale_x), scale_y(scale_y), spin(spin), alpha(alpha)
+Transform::Transform(float x, float y, float angle, float scale_x, float scale_y, int spin, float alpha,
+                     string curve_type, float c1, float c2, float c3, float c4)
+: x(x), y(y), angle(angle), scale_x(scale_x), scale_y(scale_y), spin(spin), alpha(alpha),
+curve_type(curve_type), c1(c1), c2(c2), c3(c3), c4(c4)
 {}
 
 bool Transform::operator==(const Transform& t) const
@@ -89,5 +91,13 @@ void Transform::apply_parent_transform(const Transform& parent)
         spin = 0;
     } else {
         spin = 1;
+    }
+    
+    if(curve_type == "") {
+        curve_type = parent.curve_type;
+        c1 = parent.c1;
+        c2 = parent.c2;
+        c3 = parent.c3;
+        c4 = parent.c4;
     }
 }

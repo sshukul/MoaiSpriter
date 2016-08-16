@@ -25,14 +25,15 @@ public:
     float rotationAngle = 0;
     
     // These are attributes for custom animation curves like cubic, quadratic etc.
-    string m_curve_type = "";
-    float m_c1 = -1.0;
-    float m_c2 = -1.0;
-    float m_c3 = -1.0;
-    float m_c4 = -1.0;
+    string curve_type = "";
+    float c1 = -1.0;
+    float c2 = -1.0;
+    float c3 = -1.0;
+    float c4 = -1.0;
     
     Transform();
-    Transform(float x, float y, float angle, float scale_x, float scale_y, int spin, float alpha);
+    Transform(float x, float y, float angle, float scale_x, float scale_y, int spin, float alpha,
+              string curve_type, float c1, float c2, float c3, float c4);
     
     bool operator==(const Transform& t) const;
     bool operator!=(const Transform& t) const;
