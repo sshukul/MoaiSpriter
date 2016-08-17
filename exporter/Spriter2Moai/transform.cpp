@@ -50,6 +50,16 @@ bool Transform::operator!=(const Transform& t) const
 
 void Transform::lerp(const Transform& transform, float t, int spin)
 {
+    if(transform.curve_type == "quadratic") {
+        t = quadratic(0, c1, 1, t);
+    } else if(transform.curve_type == "cubic") {
+        t = cubic(0, c1, c2, 1, t);
+    } else if(transform.curve_type == "quartic") {
+        t = quartic(0, c1, c2, c3, 1, t);
+    } else if(transform.curve_type == "quintic") {
+        t = quintic(0, c1, c2, c3, c4, 1, t);
+    }
+    
     x = lerp(x, transform.x, t);
     y = lerp(y, transform.y, t);
     alpha = lerp(alpha, transform.alpha, t);

@@ -45,6 +45,31 @@ public:
     inline float lerp(float a, float b, float t) {
         return a + (b-a)*t;
     }
+    
+    inline float inverseLinear(float a, float b, float x)
+    {
+        return (x - a) / (b - a);
+    }
+    
+    inline float quadratic(float a, float b, float c, float t)
+    {
+        return lerp(lerp(a, b, t), lerp(b, c, t), t);
+    }
+    
+    inline float cubic(float a, float b, float c, float d, float t)
+    {
+        return lerp(quadratic(a, b, c, t), quadratic(b, c, d, t), t);
+    }
+    
+    inline float quartic(float a, float b, float c, float d, float e, float t)
+    {
+        return lerp(cubic(a, b, c, d, t), cubic(b, c, d, e, t), t);
+    }
+    
+    inline float quintic(float a, float b, float c, float d, float e, float f, float t)
+    {
+        return lerp(quartic(a, b, c, d, e, t), quartic(b, c, d, e, f, t), t);
+    }
 };
 
 #endif /* defined(__Spriter2Moai__transform__) */
