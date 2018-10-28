@@ -164,6 +164,7 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
     int firstZIndex = 0;
     Object* prevObj = NULL;
     Object* prevResultObj = NULL;
+    bool prevResultObjWritten = false;
     bool loopbackFrameAlreadyWritten = false;
     bool objectHasNonMainlineFrame = false;
     bool objectHasSoundlineFrame = false;
@@ -412,8 +413,10 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             }
 
             if(isTimelineKeyframe || objectHasSoundlineFrame) {
-                if(!skipFrame && ((frameTime == timeline.m_owner->getLength() && timeline.m_owner->getLooping() != false) || prevResultObj == NULL || !resultObj->equals(*prevResultObj) || (objectHasSoundlineFrame && (soundlineTime != prevFrameTime)))) {
+                if(!skipFrame && ((frameTime == timeline.m_owner->getLength() && timeline.m_owner->getLooping() != false) || prevResultObj == NULL || !(resultObj->equals(*prevResultObj) && prevResultObjWritten == true) || (objectHasSoundlineFrame && (soundlineTime != prevFrameTime)))) {
                     Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevResultObj, hasNext);
+                    prevResultObjWritten = true;
+                    
                     if(frameTime == timeline.m_owner->getLength()) {
                         loopbackFrameAlreadyWritten = true;
                     }
