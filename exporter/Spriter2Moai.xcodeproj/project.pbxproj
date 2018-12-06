@@ -27,6 +27,8 @@
 		8EB32CBF1CDDAC16005DAB27 /* tagList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8EB32CBD1CDDAC16005DAB27 /* tagList.cpp */; };
 		8EB32CC21CDDAD7B005DAB27 /* tag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8EB32CC01CDDAD7B005DAB27 /* tag.cpp */; };
 		8EB32CC51CDDD11F005DAB27 /* taglineKey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8EB32CC31CDDD11F005DAB27 /* taglineKey.cpp */; };
+		8EC7072A1D1D629F008516C7 /* characterMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8EC707281D1D629F008516C7 /* characterMap.cpp */; };
+		8EC7072D1D1E104C008516C7 /* map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8EC7072B1D1E104C008516C7 /* map.cpp */; };
 		8EDBA5FB1CE778CE0075EC34 /* soundline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8EDBA5F91CE778CE0075EC34 /* soundline.cpp */; };
 /* End PBXBuildFile section */
 
@@ -82,6 +84,10 @@
 		8EB32CC11CDDAD7B005DAB27 /* tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tag.h; sourceTree = "<group>"; };
 		8EB32CC31CDDD11F005DAB27 /* taglineKey.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = taglineKey.cpp; sourceTree = "<group>"; };
 		8EB32CC41CDDD11F005DAB27 /* taglineKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = taglineKey.h; sourceTree = "<group>"; };
+		8EC707281D1D629F008516C7 /* characterMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = characterMap.cpp; sourceTree = "<group>"; };
+		8EC707291D1D629F008516C7 /* characterMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = characterMap.h; sourceTree = "<group>"; };
+		8EC7072B1D1E104C008516C7 /* map.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = map.cpp; sourceTree = "<group>"; };
+		8EC7072C1D1E104C008516C7 /* map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = map.h; sourceTree = "<group>"; };
 		8EDBA5F91CE778CE0075EC34 /* soundline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = soundline.cpp; sourceTree = "<group>"; };
 		8EDBA5FA1CE778CE0075EC34 /* soundline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = soundline.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -165,6 +171,10 @@
 				229EB48C177575440000FE38 /* transform.h */,
 				8EB32CC31CDDD11F005DAB27 /* taglineKey.cpp */,
 				8EB32CC41CDDD11F005DAB27 /* taglineKey.h */,
+				8EC707281D1D629F008516C7 /* characterMap.cpp */,
+				8EC707291D1D629F008516C7 /* characterMap.h */,
+				8EC7072B1D1E104C008516C7 /* map.cpp */,
+				8EC7072C1D1E104C008516C7 /* map.h */,
 			);
 			name = Spriter;
 			sourceTree = "<group>";
@@ -228,6 +238,7 @@
 				22F82AC2176F143700E92DEE /* animation.cpp in Sources */,
 				22F82AC5176F25C300E92DEE /* spriterData.cpp in Sources */,
 				8EDBA5FB1CE778CE0075EC34 /* soundline.cpp in Sources */,
+				8EC7072A1D1D629F008516C7 /* characterMap.cpp in Sources */,
 				22F82AC7176F2CD700E92DEE /* folder.cpp in Sources */,
 				8EB32CC51CDDD11F005DAB27 /* taglineKey.cpp in Sources */,
 				22F82AC9176F2FAC00E92DEE /* file.cpp in Sources */,
@@ -237,6 +248,7 @@
 				22F82AD6176FB47B00E92DEE /* object.cpp in Sources */,
 				22F82AD9176FB48500E92DEE /* boneRef.cpp in Sources */,
 				22F82ADC176FB48E00E92DEE /* bone.cpp in Sources */,
+				8EC7072D1D1E104C008516C7 /* map.cpp in Sources */,
 				229EB48D177575440000FE38 /* transform.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

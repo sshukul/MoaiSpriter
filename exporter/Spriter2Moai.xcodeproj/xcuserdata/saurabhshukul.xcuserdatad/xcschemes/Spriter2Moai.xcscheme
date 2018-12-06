@@ -67,8 +67,20 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "/Users/saurabhshukul/Documents/Alt-ws/spriter2moai/lantern/lantern.scml"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/saurabhshukul/Documents/Alt-ws/spriter2moai/main_char/main_char2.scml"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "/Users/saurabhshukul/Documents/Alt-ws/spriter2moai/main_char/main_char.scml"
             isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/saurabhshukul/Documents/Alt-ws/spriter2moai/main_char/main_char_bone_test.scml"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/saurabhshukul/Documents/Alt-ws/spriter2moai/scorpion/scorpion.scml"
