@@ -115,7 +115,7 @@ std::pair<Transform, bool>* Timeline::buildTransform(BoneRef* boneRef, int key, 
                 boneTransform.lerp(nextKeyTransform, averagingFactor, bone->getSpin());
                 boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(boneTransform.angle, nextKeyTransform.angle, bone->getSpin());
             }
-        } else if (time < bone->getTime() && boneNextKey != NULL && boneNextKey->getTime() != time && time != prevBone->getTime()) {
+        } else if (time < bone->getTime() && boneNextKey != NULL && boneNextKey->getTime() != time && prevBone != NULL && time != prevBone->getTime()) {
             if(!(looping == false && nextBoneTime == 0)) {
                 if(nextBoneTime != prevBone->getTime()) {
                     float averagingFactor = ((float)time - (float)prevBone->getTime()) / (nextBoneTime - (float)prevBone->getTime());
@@ -358,9 +358,34 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             if(boneRef == NULL) {
                 boneRef = timeline.m_owner->getBoneReference(objectRef, mainlineKeyId);
             }
+            
+            float boneBasedPivotX;
+            float boneBasedPivotY;
             if (boneRef != NULL) {
                 pair<Transform, bool>* result = timeline.buildTransform(boneRef, mainlineKeyId, frameTime, timeline.m_owner->getLength(), timeline.m_owner->getLooping(), objectHasSoundlineFrame, prevFrameTime, nextFrameTime);
-                objectTransform.apply_parent_transform(result->first);
+                
+                Transform parentTransform = result->first;
+                
+                float xBeforeTransform = parentTransform.x;
+                float yBeforeTransform = parentTransform.y;
+                
+                Transform* parentTransformWithoutAngle = new Transform(parentTransform.x, parentTransform.y, 90, parentTransform.scale_x, parentTransform.scale_y, parentTransform.spin, parentTransform.alpha, parentTransform.curve_type, parentTransform.c1, parentTransform.c2, parentTransform.c3, parentTransform.c4);
+                
+                Transform* objectTransformClone = new Transform(objectTransform.x, objectTransform.y, objectTransform.angle, objectTransform.scale_x, objectTransform.scale_y, objectTransform.spin, objectTransform.alpha, objectTransform.curve_type, objectTransform.c1, objectTransform.c2, objectTransform.c3, objectTransform.c4);
+                
+                objectTransform.apply_parent_transform(parentTransform);
+                
+                objectTransformClone->apply_parent_transform(*parentTransformWithoutAngle);
+                
+                float xDiff = objectTransformClone->x - xBeforeTransform;
+                float yDiff = objectTransformClone->y - yBeforeTransform;
+                
+                int height = timeline.m_owner->getFile(object->getFolder(), object->getFile())->getHeight();
+                int width = timeline.m_owner->getFile(object->getFolder(), object->getFile())->getWidth();
+                
+                boneBasedPivotX = abs(xDiff) / width;
+                boneBasedPivotY = abs(yDiff) / height;
+                
                 isTimelineKeyframe = isTimelineKeyframe || result->second;
             }
             
@@ -377,8 +402,22 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
             resultObj->setX(objectTransform.x);
             resultObj->setY(objectTransform.y);
             resultObj->setSpin(objectTransform.spin);
-            resultObj->setPivotX(object->getPivotX());
-            resultObj->setPivotY(object->getPivotY());
+            if (boneRef != NULL) {
+                int height = timeline.m_owner->getFile(object->getFolder(), object->getFile())->getHeight();
+                int width = timeline.m_owner->getFile(object->getFolder(), object->getFile())->getWidth();
+
+                resultObj->setPivotX(boneBasedPivotX);
+                resultObj->setPivotY(1 - boneBasedPivotY);
+                int direction = 1;
+                if (objectTransform.spin < 0) {
+                    direction = objectTransform.spin;
+                }
+                resultObj->setX(resultObj->getX() + (boneBasedPivotX * width * objectTransform.scale_x * direction));
+                resultObj->setY(resultObj->getY() - (boneBasedPivotY * height * objectTransform.scale_y * direction));
+            } else {
+                resultObj->setPivotX(object->getPivotX());
+                resultObj->setPivotY(object->getPivotY());
+            }
             resultObj->setAlpha(objectTransform.alpha);
             resultObj->setCurveType(objectTransform.curve_type);
             resultObj->setC1(objectTransform.c1);
