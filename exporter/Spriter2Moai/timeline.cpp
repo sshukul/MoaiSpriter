@@ -115,7 +115,7 @@ std::pair<Transform, bool>* Timeline::buildTransform(BoneRef* boneRef, int key, 
                 boneTransform.lerp(nextKeyTransform, averagingFactor, bone->getSpin());
                 boneTransform.rotationAngle = Timeline::calculateActualRotationAngle(boneTransform.angle, nextKeyTransform.angle, bone->getSpin());
             }
-        } else if (time < bone->getTime() && boneNextKey != NULL && boneNextKey->getTime() != time && time != prevBone->getTime()) {
+        } else if (time < bone->getTime() && boneNextKey != NULL && boneNextKey->getTime() != time && prevBone != NULL && time != prevBone->getTime()) {
             if(!(looping == false && nextBoneTime == 0)) {
                 if(nextBoneTime != prevBone->getTime()) {
                     float averagingFactor = ((float)time - (float)prevBone->getTime()) / (nextBoneTime - (float)prevBone->getTime());
@@ -412,14 +412,12 @@ std::ostream& operator<< (std::ostream& out, const Timeline& timeline) {
                 }
             }
 
-            if(isTimelineKeyframe || objectHasSoundlineFrame) {
-                if(!skipFrame && ((frameTime == timeline.m_owner->getLength() && timeline.m_owner->getLooping() != false) || prevResultObj == NULL || !(resultObj->equals(*prevResultObj) && prevResultObjWritten == true) || (objectHasSoundlineFrame && (soundlineTime != prevFrameTime)))) {
-                    Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevResultObj, hasNext);
-                    prevResultObjWritten = true;
-                    
-                    if(frameTime == timeline.m_owner->getLength()) {
-                        loopbackFrameAlreadyWritten = true;
-                    }
+            if(isTimelineKeyframe || (objectHasSoundlineFrame && !skipFrame && ((frameTime == timeline.m_owner->getLength() && timeline.m_owner->getLooping() != false) || prevResultObj == NULL || !(resultObj->equals(*prevResultObj) && prevResultObjWritten == true) || (objectHasSoundlineFrame && (soundlineTime != prevFrameTime))))) {
+                Timeline::writeObject(frameTime, resultObj, timeline,  out, &keyNum, z, prevResultObj, hasNext);
+                prevResultObjWritten = true;
+                
+                if(frameTime == timeline.m_owner->getLength()) {
+                    loopbackFrameAlreadyWritten = true;
                 }
             }
             if(mainlineKeyTime < objectTime || soundlineTime < objectTime) {
