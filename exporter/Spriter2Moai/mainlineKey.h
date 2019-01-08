@@ -66,8 +66,8 @@ public:
     BoneRef* getBoneReference(ObjectRef* a_objectRef);
     BoneRef* getBoneReference(unsigned int a_id);
     
-    ObjectRef* findReferenceToObject(unsigned int a_timelineIndex, unsigned int a_keyIndex);
-    ObjectRef* findReferenceToObject(unsigned int a_timelineIndex);
+    ObjectRef* findReferenceToObject(int a_timelineIndex, unsigned int a_keyIndex);
+    ObjectRef* findReferenceToObject(int a_timelineIndex);
     
     MainlineKey* clone();
 };

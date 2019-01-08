@@ -93,7 +93,7 @@ void MainlineKey::addObjectRef(ObjectRef* a_objectRef) {
     m_objectRefs.push_back(a_objectRef);
 }
 
-ObjectRef* MainlineKey::findReferenceToObject(unsigned int a_timelineIndex, unsigned int a_keyIndex) {
+ObjectRef* MainlineKey::findReferenceToObject(int a_timelineIndex, unsigned int a_keyIndex) {
     for(vector<ObjectRef*>::iterator it = m_objectRefs.begin(); it != m_objectRefs.end(); ++it) {
         if((*it)->getTimeline() == a_timelineIndex && (*it)->getKey() == a_keyIndex)
             return *it;
@@ -101,7 +101,7 @@ ObjectRef* MainlineKey::findReferenceToObject(unsigned int a_timelineIndex, unsi
     return NULL;
 }
 
-ObjectRef* MainlineKey::findReferenceToObject(unsigned int a_timelineIndex) {
+ObjectRef* MainlineKey::findReferenceToObject(int a_timelineIndex) {
     for(vector<ObjectRef*>::iterator it = m_objectRefs.begin(); it != m_objectRefs.end(); ++it) {
         if((*it)->getTimeline() == a_timelineIndex)
             return *it;
